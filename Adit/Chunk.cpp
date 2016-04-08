@@ -9,7 +9,8 @@
 #include <osg/PositionAttitudeTransform>
 
 #include <PolyVoxCore\Vector.h>
-#include <PolyVoxCore\CubicSurfaceExtractorWithNormals.h>
+#include <PolyVoxCore\CubicSurfaceExtractor.h>
+#include <PolyVoxCore\MeshDecimator.h>
 
 #include "BlockGrid.h"
 
@@ -51,13 +52,16 @@ void Chunk::rebuild(BlockGrid* grid)
 
 	using namespace PolyVox;
 	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
-	SurfaceMesh<PositionMaterialNormal> mesh;
-	CubicSurfaceExtractorWithNormals<BlockGrid::blockMap_type> surfaceExtractor(grid->getBlockMap(), reg, &mesh);
-
+	SurfaceMesh<PositionMaterial> mesh;
+	CubicSurfaceExtractor<BlockGrid::blockMap_type> surfaceExtractor(grid->getBlockMap(), reg, &mesh);
 	surfaceExtractor.execute();
+
+	SurfaceMesh<PositionMaterial> mesh2;
+	MeshDecimator<PositionMaterial> decimator(&mesh, &mesh2);
+
 	if (_cubeMeshNode != nullptr) 
 		_baseNode->removeChild(_cubeMeshNode);
-	_cubeMeshNode = OSGRenderer::meshToGeode(mesh);
+	_cubeMeshNode = OSGRenderer::meshToGeode(mesh2);
 	_baseNode->addChild(_cubeMeshNode);
 
 }

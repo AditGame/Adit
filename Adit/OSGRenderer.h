@@ -27,7 +27,7 @@ public:
 
 	static osg::Geometry* cubeGeometry;
 
-	static osg::Geode* meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal> &mesh);
+	static osg::Geode* meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMaterial> &mesh);
 
 	static const int BLOCK_WIDTH;
 

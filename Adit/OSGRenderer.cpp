@@ -270,7 +270,7 @@ void OSGRenderer::createFace(osg::Geometry* geometry, osg::Vec3d position, OSGRe
 
 bool withinFloatbounds(float val, int com) { return val > (float)com - 0.5f && val < (float)com + 0.5f; }
 
-osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal> &mesh)
+osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMaterial> &mesh)
 {
 	using namespace PolyVox;
 	using namespace std;
@@ -282,7 +282,7 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMater
 	geom->setUseVertexBufferObjects(true);
 
 	const vector<uint32_t>& vecIndices = mesh.getIndices();
-	const vector<PositionMaterialNormal>& vecVertices = mesh.getVertices();
+	const vector<PositionMaterial>& vecVertices = mesh.getVertices();
 
 	if (vecIndices.size() == 0 || vecVertices.size() == 0) return geode;
 
@@ -297,17 +297,8 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMater
 	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(mesh.getNoOfVertices());
 
 	for (uint i = 0; i < mesh.getNoOfVertices(); i++) {
-		PositionMaterialNormal vert0 = vecVertices[i];
+		PositionMaterial vert0 = vecVertices[i];
 		(*vertices)[i].set(vert0.getPosition().getX(), vert0.getPosition().getY(), vert0.getPosition().getZ());
-
-	}
-
-	// The normal array
-	osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array(mesh.getNoOfVertices());
-
-	for (uint i = 0; i < mesh.getNoOfVertices(); i++) {
-		PositionMaterialNormal vert0 = vecVertices[i];
-		(*normals)[0].set(vert0.getPosition().getX(), vert0.getPosition().getY(), vert0.getPosition().getZ());
 
 	}
 
@@ -315,7 +306,7 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMater
 	osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(mesh.getNoOfVertices());
 
 	for (uint i = 0; i < mesh.getNoOfVertices(); i++) {
-		PositionMaterialNormal vert0 = vecVertices[i];
+		PositionMaterial vert0 = vecVertices[i];
 		if(withinFloatbounds(vert0.getMaterial(),BlockType::BlockType_Stone))
 			(*colors)[i].set(0.41f, 0.41f, 0.41f, 0.0f);
 		else if (withinFloatbounds(vert0.getMaterial(), BlockType::BlockType_Grass))
