@@ -28,6 +28,10 @@ public:
 	Coords operator-=(const Coords &v) const;
 	Coords operator*(const int &v) const;
 
+	int dist_squared(const Coords &v) const;
+
+	int dist_squared_2D(const Coords & v) const;
+
 	operator PolyVox::Vector3DInt32() const;
 private:
 	int _x;

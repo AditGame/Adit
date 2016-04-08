@@ -26,6 +26,21 @@ Coords Coords::operator*(const int & v) const
 	return Coords(x()*v, y()*v, z()*v);
 }
 
+int Coords::dist_squared(const Coords &v) const
+{
+	int x = _x - v.x();
+	int y = _y - v.y();
+	int z = _z - v.z();
+	return x*x + y*y + z*z;
+}
+
+int Coords::dist_squared_2D(const Coords &v) const
+{
+	int x = _x - v.x();
+	int y = _y - v.y();
+	return x*x + y*y;
+}
+
 Coords::operator PolyVox::Vector3DInt32() const
 {
 	PolyVox::Vector3DInt32 vec;

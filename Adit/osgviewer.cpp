@@ -62,6 +62,14 @@ public:
 				grid->chunkManager->rebuildChunks();
 				return false;
 				break;
+			case 'n':
+				grid->chunkManager->setVisibility(grid->chunkManager->getVisibility() + 1);
+				return false;
+				break;
+			case 's':
+				grid->chunkManager->setVisibility(grid->chunkManager->getVisibility() - 1);
+				return false;
+				break;
 			default:
 				return false;
 			}

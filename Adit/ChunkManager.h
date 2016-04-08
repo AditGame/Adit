@@ -32,9 +32,11 @@ public:
 	void rebuildChunks();
 	Chunk& getChunk(int x, int y) { return getChunk(Coords(x, y)); }
 
+	Coords blockToChunk(Coords);
+
 	/// Gets the current visibility (a cube arround the player's position, visibility being the "radius")
-	int getVisibility() { return _visibility; }
-	int setVisibility(int i) { _visibility = i; }
+	int getVisibility() const { return _visibility; }
+	void setVisibility(int i);
 
 	/// Sets the chunk the player is currently in. Will attempt to load the chunks within the player's visibility
 	void setCenterChunk(int x, int y) { return setCenterChunk(Coords(x, y)); }

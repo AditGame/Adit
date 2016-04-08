@@ -25,6 +25,12 @@ ChunkManager::~ChunkManager()
 {
 }
 
+void ChunkManager::setVisibility(int vis)
+{
+	_visibility = vis;
+	setCenterChunk(_center, true);
+}
+
 void ChunkManager::updateChunks()
 {
 
@@ -54,12 +60,13 @@ void ChunkManager::rebuildChunks()
 	}
 	_chunkMap.clear();
 
-	for (dirtyChunks_type::iterator it = _dirtyChunks.begin(); it != _dirtyChunks.end(); it++)
-	{
-		
-	}
 	_dirtyChunks.clear();
 	setCenterChunk(_center, true);
+}
+
+Coords ChunkManager::blockToChunk(Coords in)
+{
+	return Coords(in.x()/Chunk::chunkWidth, in.y()/Chunk::chunkWidth, in.z()/Chunk::chunkHeight);
 }
 
 void ChunkManager::setCenterChunk(Coords center, bool force)
@@ -69,13 +76,10 @@ void ChunkManager::setCenterChunk(Coords center, bool force)
 	//Delete out-of-range chunks
 	for (chunkMap_type::iterator it = _chunkMap.begin(); it != _chunkMap.end(); /* No increment */)
 	{
-		if (it->first.x() > center.x() + _visibility || it->first.x() < center.x() - _visibility || it->first.y() > center.y() + _visibility || it->first.y() < center.y() - _visibility)
+		if (it->first.dist_squared_2D(center) > _visibility * _visibility)
 		{
-			//if (it->first.z() > center.z() + _visibility && it->first.z() < center.z() - _visibility)
-			{
-				delete it->second;
-				it = _chunkMap.erase(it); //returns next element
-			}
+			delete it->second;
+			it = _chunkMap.erase(it); //returns next element
 		}
 		else
 		{
@@ -88,18 +92,20 @@ void ChunkManager::setCenterChunk(Coords center, bool force)
 	{
 		for (int y = center.y() - _visibility; y <= center.y() + _visibility; y++)
 		{
-			//for (int z = center.z() - _visibility; z <= center.z() + _visibility && z <= BlockGrid::gridHeight/Chunk::chunkHeight; z++)
-			//for (int z = 0; z <= BlockGrid::gridHeight / Chunk::chunkHeight; z++)
+			for (int z = 0; z <= BlockGrid::gridHeight / Chunk::chunkHeight; z++)
 			{
-				int z = 0;
 				if (z < 0) z = 0; //ensure we don't go too low
 				Coords coords(x, y, z);
-				chunkMap_type::iterator it = _chunkMap.find(coords);
-				if (it == _chunkMap.end())
+				if (coords.dist_squared_2D(center) < _visibility * _visibility)
 				{
-					Chunk* chunk = new Chunk(coords, _gridContainer->getBaseNode());
-					_chunkMap.emplace(coords, chunk);
-					_dirtyChunks.push_front(_chunkMap.at(coords));
+					Coords coords(x, y, z);
+					chunkMap_type::iterator it = _chunkMap.find(coords);
+					if (it == _chunkMap.end())
+					{
+						Chunk* chunk = new Chunk(coords, _gridContainer->getBaseNode());
+						_chunkMap.emplace(coords, chunk);
+						_dirtyChunks.push_front(_chunkMap.at(coords));
+					}
 				}
 			}
 		}
