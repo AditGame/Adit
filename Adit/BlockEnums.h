@@ -3,7 +3,6 @@
 enum BlockType
 {
 	BlockType_Default = 0,
-
 	BlockType_Grass,
 	BlockType_Dirt,
 	BlockType_Water,

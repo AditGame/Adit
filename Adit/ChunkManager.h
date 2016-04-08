@@ -6,13 +6,15 @@
 #include "ChunkLoaderThread.h"
 #include "LandGenerator.h"
 
+#include <PolyVoxCore\LargeVolume.h>
+
 class BlockGrid;
 
 class ChunkManager
 {
 public:
 	//Default, does nothing (replace with constructed object)
-	ChunkManager() {}
+	//ChunkManager() : _chunkMap(&ChunkManager::loadRegion, {}
 
 	ChunkManager(BlockGrid*);
 	~ChunkManager();
@@ -33,12 +35,18 @@ public:
 	void setCenterChunk(int x, int y) { return setCenterChunk(Coords(x, y)); }
 	void setCenterChunk(Coords center);
 
-	typedef std::map<Coords, Chunk*> chunkMap_type;
-	typedef chunkMap_type::iterator chunkMap_iterator;
+	static void loadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& volume, const PolyVox::Region & reg);
 
-	/// Gets a pointer to the first chunk in the map
-	chunkMap_iterator chunkMap_begin() { return _chunkMap.begin(); }
-	chunkMap_iterator chunkMap_end() { return _chunkMap.end(); }
+	static void unloadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>&, const PolyVox::Region & reg);
+
+	typedef PolyVox::LargeVolume<CompositeBlock::blockDataType> chunkMap_type;
+	//typedef chunkMap_type::iterator chunkMap_iterator;
+
+	///// Gets a pointer to the first chunk in the map
+	//chunkMap_iterator chunkMap_begin() { return _chunkMap.begin(); }
+	//chunkMap_iterator chunkMap_end() { return _chunkMap.end(); }
+
+	static const int mapHeight;
 private:
 	int _visibility;
 	chunkMap_type _chunkMap;

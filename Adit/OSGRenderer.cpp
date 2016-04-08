@@ -7,6 +7,7 @@
 #include <osg/Shader>
 #include <osg/ShadeModel>
 #include <osgDB/FileUtils>
+#include <osg/ValueObject>
 
 #include <cstdlib>
 
@@ -31,7 +32,7 @@ void OSGRenderer::render(BlockGrid& grid)
 {
 	//Render every block
 	ChunkManager* chunkMan = grid.chunkManager;
-	for (ChunkManager::chunkMap_iterator it = chunkMan->chunkMap_begin();;);
+	//for (ChunkManager::chunkMap_iterator it = chunkMan->chunkMap_begin();;);
 }
 
 osg::Geometry* OSGRenderer::createCube()
@@ -269,11 +270,6 @@ void OSGRenderer::createFace(osg::Geometry* geometry, osg::Vec3d position, OSGRe
 
 osg::Geode* OSGRenderer::combineChunk(Chunk* chunk)
 {
-	osg::Geode* geode = new osg::Geode();
-	osg::Geometry* geom = new osg::Geometry();
-
-	geom->setUseVertexBufferObjects(true);
-
 	using namespace PolyVox;
 	using namespace std;
 	using namespace osg;
@@ -282,6 +278,22 @@ osg::Geode* OSGRenderer::combineChunk(Chunk* chunk)
 	CubicSurfaceExtractorWithNormals< SimpleVolume<CompositeBlock> > surfaceExtractor(&(chunk->_blockMap), chunk->_blockMap.getEnclosingRegion(), &mesh);
 
 	surfaceExtractor.execute();
+
+	return meshToGeode(mesh);
+}
+
+bool withinFloatbounds(float val, int com) { return val > (float)com - 0.5f && val < (float)com + 0.5f; }
+
+osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal> &mesh)
+{
+	using namespace PolyVox;
+	using namespace std;
+	using namespace osg;
+
+	osg::Geode* geode = new osg::Geode();
+	osg::Geometry* geom = new osg::Geometry();
+
+	geom->setUseVertexBufferObjects(true);
 
 	const vector<uint32_t>& vecIndices = mesh.getIndices();
 	const vector<PositionMaterialNormal>& vecVertices = mesh.getVertices();
@@ -313,37 +325,57 @@ osg::Geode* OSGRenderer::combineChunk(Chunk* chunk)
 
 	}
 
+	// The color array
+	osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(mesh.getNoOfVertices());
+
+	for (uint i = 0; i < mesh.getNoOfVertices(); i++) {
+		PositionMaterialNormal vert0 = vecVertices[i];
+		if(withinFloatbounds(vert0.getMaterial(),BlockType::BlockType_Stone))
+			(*colors)[i].set(0.41f, 0.41f, 0.41f, 0.0f);
+		else if (withinFloatbounds(vert0.getMaterial(), BlockType::BlockType_Grass))
+			(*colors)[i].set(0.22f, 0.36f, 0.20f, 0.0f);
+		else if (withinFloatbounds(vert0.getMaterial(), BlockType::BlockType_Dirt))
+			(*colors)[i].set(0.53f, 0.26f, 0.12f, 0.0f);
+		else
+			(*colors)[i].set(0.0f, 0.0f, 1.0f, 0.0f);
+		//std::cout << vert0.getMaterial() << std::endl;
+	}
+
 	// create white material
 	osg::Material *material = new osg::Material();
-	material->setDiffuse(Material::FRONT, Vec4(1.0, 1.0, 1.0, 1.0));
+	material->setDiffuse(Material::FRONT, Vec4(0.41, 0.41, 0.41, 1.0));
 	material->setSpecular(Material::FRONT, Vec4(0.0, 0.0, 0.0, 1.0));
 	material->setAmbient(Material::FRONT, Vec4(0.1, 0.1, 0.1, 1.0));
 	material->setEmission(Material::FRONT, Vec4(0.0, 0.0, 0.0, 1.0));
 	material->setShininess(Material::FRONT, 25.0);
+	material->setUserValue("matID", 1);
 
-	osg::StateSet* brickState = geom->getOrCreateStateSet();
+	//osg::StateSet* brickState = geom->getOrCreateStateSet();
 
 	osg::Program* brickProgramObject = new osg::Program;
 	osg::Shader* brickVertexObject =
 		new osg::Shader(osg::Shader::VERTEX);
 	osg::Shader* brickFragmentObject =
 		new osg::Shader(osg::Shader::FRAGMENT);
-	brickProgramObject->addShader(brickFragmentObject);
-	brickProgramObject->addShader(brickVertexObject);
-	loadShaderSource(brickVertexObject, "shaders/brick.vert");
-	loadShaderSource(brickFragmentObject, "shaders/brick.frag");
+	//brickProgramObject->addShader(brickFragmentObject);
+	//brickProgramObject->addShader(brickVertexObject);
+	//loadShaderSource(brickVertexObject, "shaders/brick.vert");
+	//loadShaderSource(brickFragmentObject, "shaders/brick.frag");
 
-	brickState->setAttributeAndModes(brickProgramObject, osg::StateAttribute::ON);
+	//brickState->setAttributeAndModes(brickProgramObject, osg::StateAttribute::ON);
+	//brickState->addUniform(new osg::Uniform("materialID", 1));
 
 
 	// Construct the polygon geometry
-	geom->getOrCreateStateSet()->setAttribute(material);
 	geom->setDataVariance(osg::Object::DYNAMIC);
 	geom->setUseDisplayList(false);
 	geom->setUseVertexBufferObjects(true);
 	geom->setVertexArray(vertices.get());
-	geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
 	geom->addPrimitiveSet(indices.get());
+
+	geom->setColorArray(colors);
+	geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
 	//for (int x = 0; x < Chunk::chunkWidth; x++)
 	//{

@@ -5,13 +5,21 @@
 #include <string>
 #include <iostream>
 
+#include <PolyVoxCore\ConstVolumeProxy.h>
+#include <PolyVoxCore\SurfaceMesh.h>
+#include <PolyVoxCore\CubicSurfaceExtractorWithNormals.h>
+
+#include <osg/Geode>
+
 #include "BlockGrid.h"
+#include "OSGRenderer.h"
 
+const int ChunkManager::mapHeight = 255;
 
-ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container)
+ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _chunkMap(&loadRegion, &unloadRegion, mapHeight+1)
 {
 	_visibility = 4;
-	for (int x = -_visibility; x <= _visibility; x++)
+	/*for (int x = -_visibility; x <= _visibility; x++)
 	{
 		for (int y = -_visibility; y <= _visibility; y++)
 		{
@@ -21,7 +29,21 @@ ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container)
 				chunkLoader.requestLoadChunk(coords);
 			}
 		}
-	}
+	}*/
+
+	using namespace PolyVox;
+	PolyVox::Region reg(Vector3DInt32(0, 0, 0), Vector3DInt32(128, 128, mapHeight));
+	std::cout << "Prefetching region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
+	_chunkMap.prefetch(reg);
+
+	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
+	SurfaceMesh<PositionMaterialNormal> mesh;
+	PolyVox::Region reg2(Vector3DInt32(0, 0, 0), Vector3DInt32(128, 128, mapHeight));
+	CubicSurfaceExtractorWithNormals< chunkMap_type> surfaceExtractor(&(_chunkMap), reg2, &mesh);
+
+	surfaceExtractor.execute();
+	osg::Geode* shapeGeode = OSGRenderer::meshToGeode(mesh);
+	_gridContainer->getBaseNode()->addChild(shapeGeode);
 }
 
 
@@ -31,22 +53,22 @@ ChunkManager::~ChunkManager()
 
 void ChunkManager::updateChunks()
 {
-	Chunk* loadedChunk = chunkLoader.getLoadedChunk();
+	/*Chunk* loadedChunk = chunkLoader.getLoadedChunk();
 	while (loadedChunk != nullptr)
 	{
 		loadedChunk->attachToGrid(_gridContainer->getBaseNode());
 		_chunkMap.emplace(loadedChunk->getlocation(), loadedChunk);
 		std::cout << "Chunk: " << loadedChunk->getlocation() << std::endl;
 		loadedChunk = chunkLoader.getLoadedChunk();
-	}
+	}*/
 }
 
 Chunk& ChunkManager::getChunk(Coords coords)
 {
-	chunkMap_iterator it = _chunkMap.find(coords);
+	/*chunkMap_iterator it = _chunkMap.find(coords);
 	if (it != _chunkMap.end())
 		return *(it->second);
-	else
+	else*/
 		return Chunk(coords, _gridContainer->getBaseNode());
 	//TODO: Better "no chunk" logic
 }
@@ -55,28 +77,41 @@ void ChunkManager::setCenterChunk(Coords center)
 {
 	return; //(ignore for now)
 	//Delete out-of-range chunks
-	for (chunkMap_iterator it = _chunkMap.begin(); it != _chunkMap.end(); it++)
-	{
-		if (it->first.getX() > center.getX() + _visibility && it->first.getX() < center.getX() - _visibility)
-		{
-			_chunkMap.erase(it);
-		}
-	}
+	//for (chunkMap_iterator it = _chunkMap.begin(); it != _chunkMap.end(); it++)
+	//{
+	//	if (it->first.getX() > center.getX() + _visibility && it->first.getX() < center.getX() - _visibility)
+	//	{
+	//		_chunkMap.erase(it);
+	//	}
+	//}
 
-	//load missing chunks
-	std::list<Coords> chunksToLoad;
-	for (int x = center.getX() - _visibility; x <= center.getX() + _visibility; x++)
-	{
-		for (int y = center.getY() - _visibility; y <= center.getY() + _visibility; y++)
-		{
-			Coords coords(x, y);
-			chunkMap_iterator it = _chunkMap.find(coords);
-			if (it==_chunkMap.end())
-			{
-				chunksToLoad.push_back(coords);
-			}
-		}
-	}
+	////load missing chunks
+	//std::list<Coords> chunksToLoad;
+	//for (int x = center.getX() - _visibility; x <= center.getX() + _visibility; x++)
+	//{
+	//	for (int y = center.getY() - _visibility; y <= center.getY() + _visibility; y++)
+	//	{
+	//		Coords coords(x, y);
+	//		chunkMap_iterator it = _chunkMap.find(coords);
+	//		if (it==_chunkMap.end())
+	//		{
+	//			chunksToLoad.push_back(coords);
+	//		}
+	//	}
+	//}
 
 	//send missing chunks to ChunkLoaderManager
+}
+
+
+void ChunkManager::loadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& volume, const PolyVox::Region& reg)
+{
+
+	LandGenerator gen;
+	gen.fillVolume(volume, reg);
+}
+
+void ChunkManager::unloadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& /*vol*/, const PolyVox::Region& reg)
+{
+	std::cout << "warning unloading region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
 }

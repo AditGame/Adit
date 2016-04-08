@@ -17,6 +17,8 @@ public:
 
 	int isSolid() { return body != BlockType::BlockType_Default; }
 
+	typedef uint32_t blockDataType;
+
 	operator uint8_t() const { return body; }
 
 	int body;
