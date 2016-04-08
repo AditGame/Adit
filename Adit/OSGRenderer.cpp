@@ -268,20 +268,6 @@ void OSGRenderer::createFace(osg::Geometry* geometry, osg::Vec3d position, OSGRe
 	geometry->setTexCoordArray(0, texcoords);
 }
 
-osg::Geode* OSGRenderer::combineChunk(Chunk* chunk)
-{
-	using namespace PolyVox;
-	using namespace std;
-	using namespace osg;
-
-	SurfaceMesh<PositionMaterialNormal> mesh;
-	CubicSurfaceExtractorWithNormals< SimpleVolume<CompositeBlock> > surfaceExtractor(&(chunk->_blockMap), chunk->_blockMap.getEnclosingRegion(), &mesh);
-
-	surfaceExtractor.execute();
-
-	return meshToGeode(mesh);
-}
-
 bool withinFloatbounds(float val, int com) { return val > (float)com - 0.5f && val < (float)com + 0.5f; }
 
 osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal> &mesh)

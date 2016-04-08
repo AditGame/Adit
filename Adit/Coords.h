@@ -2,16 +2,21 @@
 
 #include <ostream>
 
+#include <osg/Vec3i>
+
+#include <PolyVoxCore\Vector.h>
+
+//osg Vec2i class with additions
 class Coords
 {
 public:
-	Coords(int x, int y, int z=0) : x(x), y(y), z(z) {}
+	Coords(int x, int y, int z = 0) : _x(x), _y(y), _z(z) {}
 
-	Coords(const Coords& v) : x(v.getX()), y(v.getY()), z(v.getZ()) {}
+	Coords(const Coords &v) : _x(v.x()), _y(v.y()), _z(v.z()) {}
 
-	int getX() const { return x; }
-	int getY() const { return y; }
-	int getZ() const { return z; }
+	int x() const { return _x; }
+	int y() const { return _y; }
+	int z() const { return _z; }
 
 	bool operator<(const Coords &v) const;
 	bool operator<=(const Coords &v) const;
@@ -19,13 +24,15 @@ public:
 	bool operator>=(const Coords &v) const;
 	bool operator==(const Coords &v) const;
 	Coords operator+=(const Coords &v) const;
+	Coords operator+(const Coords & v) const;
 	Coords operator-=(const Coords &v) const;
 	Coords operator*(const int &v) const;
 
+	operator PolyVox::Vector3DInt32() const;
 private:
-	int x;
-	int y;
-	int z;
+	int _x;
+	int _y;
+	int _z;
 };
 
 std::ostream& operator<<(std::ostream& os, const Coords& c);

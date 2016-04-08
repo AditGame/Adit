@@ -14,36 +14,10 @@
 #include "BlockGrid.h"
 #include "OSGRenderer.h"
 
-const int ChunkManager::mapHeight = 255;
 
-ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _chunkMap(&loadRegion, &unloadRegion, mapHeight+1)
+ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _center(-100,-100,-100)
 {
 	_visibility = 4;
-	/*for (int x = -_visibility; x <= _visibility; x++)
-	{
-		for (int y = -_visibility; y <= _visibility; y++)
-		{
-			for (int z = -_visibility; z <= _visibility; z++)
-			{
-				Coords coords(x,y,z);
-				chunkLoader.requestLoadChunk(coords);
-			}
-		}
-	}*/
-
-	using namespace PolyVox;
-	PolyVox::Region reg(Vector3DInt32(0, 0, 0), Vector3DInt32(128, 128, mapHeight));
-	std::cout << "Prefetching region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
-	_chunkMap.prefetch(reg);
-
-	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
-	SurfaceMesh<PositionMaterialNormal> mesh;
-	PolyVox::Region reg2(Vector3DInt32(0, 0, 0), Vector3DInt32(128, 128, mapHeight));
-	CubicSurfaceExtractorWithNormals< chunkMap_type> surfaceExtractor(&(_chunkMap), reg2, &mesh);
-
-	surfaceExtractor.execute();
-	osg::Geode* shapeGeode = OSGRenderer::meshToGeode(mesh);
-	_gridContainer->getBaseNode()->addChild(shapeGeode);
 }
 
 
@@ -53,14 +27,13 @@ ChunkManager::~ChunkManager()
 
 void ChunkManager::updateChunks()
 {
-	/*Chunk* loadedChunk = chunkLoader.getLoadedChunk();
-	while (loadedChunk != nullptr)
+
+	//rebuild one dirty chunk at a time
+	if (_dirtyChunks.size() > 0)
 	{
-		loadedChunk->attachToGrid(_gridContainer->getBaseNode());
-		_chunkMap.emplace(loadedChunk->getlocation(), loadedChunk);
-		std::cout << "Chunk: " << loadedChunk->getlocation() << std::endl;
-		loadedChunk = chunkLoader.getLoadedChunk();
-	}*/
+		_dirtyChunks.back()->rebuild(_gridContainer);
+		_dirtyChunks.pop_back();
+	}
 }
 
 Chunk& ChunkManager::getChunk(Coords coords)
@@ -73,40 +46,77 @@ Chunk& ChunkManager::getChunk(Coords coords)
 	//TODO: Better "no chunk" logic
 }
 
-void ChunkManager::setCenterChunk(Coords center)
+void ChunkManager::rebuildChunks()
 {
-	return; //(ignore for now)
+	for (chunkMap_type::iterator it = _chunkMap.begin(); it != _chunkMap.end(); it++)
+	{
+		delete it->second;
+	}
+	_chunkMap.clear();
+
+	for (dirtyChunks_type::iterator it = _dirtyChunks.begin(); it != _dirtyChunks.end(); it++)
+	{
+		
+	}
+	_dirtyChunks.clear();
+	setCenterChunk(_center, true);
+}
+
+void ChunkManager::setCenterChunk(Coords center, bool force)
+{
+	if (center == _center && !force) return;
+	_center = center;
 	//Delete out-of-range chunks
-	//for (chunkMap_iterator it = _chunkMap.begin(); it != _chunkMap.end(); it++)
-	//{
-	//	if (it->first.getX() > center.getX() + _visibility && it->first.getX() < center.getX() - _visibility)
-	//	{
-	//		_chunkMap.erase(it);
-	//	}
-	//}
+	for (chunkMap_type::iterator it = _chunkMap.begin(); it != _chunkMap.end(); /* No increment */)
+	{
+		if (it->first.x() > center.x() + _visibility || it->first.x() < center.x() - _visibility || it->first.y() > center.y() + _visibility || it->first.y() < center.y() - _visibility)
+		{
+			//if (it->first.z() > center.z() + _visibility && it->first.z() < center.z() - _visibility)
+			{
+				delete it->second;
+				it = _chunkMap.erase(it); //returns next element
+			}
+		}
+		else
+		{
+			it++;
+		}
+	}
 
-	////load missing chunks
-	//std::list<Coords> chunksToLoad;
-	//for (int x = center.getX() - _visibility; x <= center.getX() + _visibility; x++)
-	//{
-	//	for (int y = center.getY() - _visibility; y <= center.getY() + _visibility; y++)
-	//	{
-	//		Coords coords(x, y);
-	//		chunkMap_iterator it = _chunkMap.find(coords);
-	//		if (it==_chunkMap.end())
-	//		{
-	//			chunksToLoad.push_back(coords);
-	//		}
-	//	}
-	//}
+	//load missing chunks
+	for (int x = center.x() - _visibility; x <= center.x() + _visibility; x++)
+	{
+		for (int y = center.y() - _visibility; y <= center.y() + _visibility; y++)
+		{
+			//for (int z = center.z() - _visibility; z <= center.z() + _visibility && z <= BlockGrid::gridHeight/Chunk::chunkHeight; z++)
+			//for (int z = 0; z <= BlockGrid::gridHeight / Chunk::chunkHeight; z++)
+			{
+				int z = 0;
+				if (z < 0) z = 0; //ensure we don't go too low
+				Coords coords(x, y, z);
+				chunkMap_type::iterator it = _chunkMap.find(coords);
+				if (it == _chunkMap.end())
+				{
+					Chunk* chunk = new Chunk(coords, _gridContainer->getBaseNode());
+					_chunkMap.emplace(coords, chunk);
+					_dirtyChunks.push_front(_chunkMap.at(coords));
+				}
+			}
+		}
+	}
+}
 
-	//send missing chunks to ChunkLoaderManager
+void ChunkManager::moveCenterChunk(Coords movement)
+{
+	movement = movement + _center;
+	std::cout << _center << "=>" << movement << std::endl;
+	setCenterChunk(movement);
 }
 
 
 void ChunkManager::loadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& volume, const PolyVox::Region& reg)
 {
-
+	std::cout << "warning loading region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
 	LandGenerator gen;
 	gen.fillVolume(volume, reg);
 }

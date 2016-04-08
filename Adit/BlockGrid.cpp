@@ -1,10 +1,13 @@
 #include "BlockGrid.h"
 
-BlockGrid::BlockGrid(osg::Group* rootNode) : _parentNode(rootNode)
+const int BlockGrid::gridHeight = 255;
+
+BlockGrid::BlockGrid(osg::Group* rootNode) : _parentNode(rootNode), _blockmap(&ChunkManager::loadRegion, &ChunkManager::unloadRegion, gridHeight + 1)
 {
 	_baseNode = new osg::Group;
 	_parentNode->addChild(_baseNode);
 	chunkManager = new ChunkManager(this);
+	chunkManager->setCenterChunk(Coords(0, 0, gridHeight / 2 / Chunk::chunkHeight));
 }
 
 BlockGrid::~BlockGrid()
@@ -12,13 +15,9 @@ BlockGrid::~BlockGrid()
 	_parentNode->removeChild(_baseNode);
 }
 
-CompositeBlock & BlockGrid::getBlock(Coords location)
+CompositeBlock::blockDataType BlockGrid::getBlock(Coords location)
 {
-	int chunkX = location.getX() / Chunk::chunkWidth;
-	int chunkY = location.getY() / Chunk::chunkWidth;
-	int blockX = location.getX() % Chunk::chunkWidth;
-	int blockY = location.getY() % Chunk::chunkWidth;
-	return chunkManager->getChunk(Coords(chunkX, chunkY)).getBlock(Coords(blockX, blockY));
+	return _blockmap.getVoxelAt(location);
 }
 
 void BlockGrid::update()

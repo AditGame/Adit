@@ -38,6 +38,42 @@
 #include "BlockGrid.h"
 #include "OSGRenderer.h"
 
+class EventHandler : public osgGA::GUIEventHandler
+{
+public:
+	EventHandler(BlockGrid* grid) : grid(grid) {}
+	bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+	{
+		switch (ea.getEventType())
+		{
+		case(osgGA::GUIEventAdapter::KEYDOWN) :
+		{
+			switch (ea.getKey())
+			{
+			case 'o':
+				grid->chunkManager->moveCenterChunk(Coords(1, 0));
+				return false;
+				break;
+			case 'p':
+				grid->chunkManager->moveCenterChunk(Coords(-1, 0));
+				return false;
+				break;
+			case 'i':
+				grid->chunkManager->rebuildChunks();
+				return false;
+				break;
+			default:
+				return false;
+			}
+		}
+		default:
+			return false;
+		}
+	}
+private:
+	BlockGrid* grid;
+};
+
 int go(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -57,6 +93,7 @@ int go(int argc, char** argv)
 
 
 	viewer.setUpViewOnSingleScreen(osg::GraphicsContext::ScreenIdentifier(0).screenNum);
+	//viewer.setUpViewInWindow(20, 20, 400, 400, 1);
 
     // set up the camera manipulators.
     {
@@ -120,6 +157,8 @@ int go(int argc, char** argv)
 	BlockGrid grid(root);
 
 	//root->addChild(shapeGeode);
+	EventHandler* handle = new EventHandler(&grid);
+	viewer.addEventHandler(handle);
 
 	viewer.setSceneData(root);
 	viewer.realize();

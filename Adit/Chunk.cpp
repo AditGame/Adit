@@ -9,22 +9,17 @@
 #include <osg/PositionAttitudeTransform>
 
 #include <PolyVoxCore\Vector.h>
+#include <PolyVoxCore\CubicSurfaceExtractorWithNormals.h>
 
-const int Chunk::chunkHeight = 8;
+#include "BlockGrid.h"
+
+const int Chunk::chunkHeight = BlockGrid::gridHeight;
 const int Chunk::chunkWidth = 8;
 
-Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) : _parentNode(gridNode), _chunkLocation(chunkLocation), _baseNode(new osg::PositionAttitudeTransform), _blockMap(PolyVox::Region(PolyVox::Vector3DInt32(0, 0, 0), PolyVox::Vector3DInt32(chunkWidth, chunkWidth, chunkHeight)))
+Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) : _parentNode(gridNode), _chunkLocation(chunkLocation), _cubeMeshNode(nullptr), _baseNode(new osg::PositionAttitudeTransform)
 {
 	if (gridNode != nullptr)
 		attachToGrid(gridNode);
-
-	
-	LandGenerator gen = LandGenerator();
-	gen.fillChunk(this);
-
-	osg::Geode* shapeGeode = OSGRenderer::combineChunk(this);
-
-	_baseNode->addChild(shapeGeode);
 }
 
 Chunk::~Chunk()
@@ -37,33 +32,32 @@ void Chunk::attachToGrid(osg::Group * gridNode)
 {
 	_parentNode = gridNode;
 	_parentNode->addChild(_baseNode);
-	osg::Vec3d position(_chunkLocation.getX()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.getY()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.getZ()*chunkHeight*OSGRenderer::BLOCK_WIDTH);
+	osg::Vec3d position(_chunkLocation.x()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.y()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.z()*chunkHeight*OSGRenderer::BLOCK_WIDTH);
 	_baseNode->setPosition(position);
-}
-
-CompositeBlock& Chunk::getBlock(Coords location, bool relativeToChunk)
-{
-	if (!relativeToChunk)
-		location -= _chunkLocation * chunkWidth;
-	if (isInBounds(location))
-	{
-		
-		return _blockMap.getVoxelAt(location.getX(), location.getY(), location.getZ());
-	}
-	else
-	{
-		std::stringstream ss;
-		ss << "Attempted to access block at coords " << location.getX() << "," << location.getY() << "," << location.getZ();
-		throw std::out_of_range(ss.str());
-	}
 }
 
 bool Chunk::isInBounds(Coords location)
 {
-	return (location.getX() < chunkWidth && location.getY() < chunkWidth && location.getZ() < chunkHeight && location.getX() >= 0 && location.getY() >= 0 && location.getZ() >= 0);
+	return (location.x() < chunkWidth && location.y() < chunkWidth && location.z() < chunkHeight && location.x() >= 0 && location.y() >= 0 && location.z() >= 0);
 }
 
-void Chunk::rebuild()
+void Chunk::rebuild(BlockGrid* grid)
 {
+	int z = _chunkLocation.z()*chunkHeight + chunkHeight;
+	if (z > 255) z = 255;
+	PolyVox::Region reg(
+		_chunkLocation.x()*chunkWidth,				_chunkLocation.y()*chunkWidth,				_chunkLocation.z()*chunkHeight,
+		_chunkLocation.x()*chunkWidth + chunkWidth, _chunkLocation.y()*chunkWidth + chunkWidth, z);
+
+	using namespace PolyVox;
+	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
+	SurfaceMesh<PositionMaterialNormal> mesh;
+	CubicSurfaceExtractorWithNormals<BlockGrid::blockMap_type> surfaceExtractor(grid->getBlockMap(), reg, &mesh);
+
+	surfaceExtractor.execute();
+	if (_cubeMeshNode != nullptr) 
+		_baseNode->removeChild(_cubeMeshNode);
+	_cubeMeshNode = OSGRenderer::meshToGeode(mesh);
+	_baseNode->addChild(_cubeMeshNode);
 
 }
