@@ -18,6 +18,7 @@
 #include "InputHandler.h"
 #include "Player.h"
 #include "PlayerCamera.h"
+#include "OSGRenderer.h"
 
 #include "Options.h"
 
@@ -91,6 +92,7 @@ void GameEngine::go()
 {
 	viewer = setUpView();
 
+	OSGRenderer::setUp();
 
 	// Add the camera data
 	//viewer->setCameraManipulator(_camera->getManipulator());

@@ -19,9 +19,33 @@ OSGRenderer::OSGRenderer()
 }
 
 osg::Geometry* OSGRenderer::cubeGeometry = nullptr;
+osg::Material* OSGRenderer::_blockMaterial = nullptr;
+osg::Program* OSGRenderer::_blockProgram = nullptr;
 
 OSGRenderer::~OSGRenderer()
 {
+}
+
+void OSGRenderer::setUp()
+{
+	// create white material
+	_blockMaterial = new osg::Material();
+	_blockMaterial->setDiffuse(osg::Material::FRONT, osg::Vec4(0.41, 0.41, 0.41, 1.0));
+	_blockMaterial->setSpecular(osg::Material::FRONT, osg::Vec4(0.0, 0.0, 0.0, 1.0));
+	_blockMaterial->setAmbient(osg::Material::FRONT, osg::Vec4(0.1, 0.1, 0.1, 1.0));
+	_blockMaterial->setEmission(osg::Material::FRONT, osg::Vec4(0.0, 0.0, 0.0, 1.0));
+	_blockMaterial->setShininess(osg::Material::FRONT, 25.0);
+
+	_blockProgram = new osg::Program;
+	osg::Shader* brickVertexObject =
+		new osg::Shader(osg::Shader::VERTEX);
+	osg::Shader* brickFragmentObject =
+		new osg::Shader(osg::Shader::FRAGMENT);
+
+	_blockProgram->addShader(brickFragmentObject);
+	_blockProgram->addShader(brickVertexObject);
+	loadShaderSource(brickVertexObject, "shaders/brick.vert");
+	loadShaderSource(brickFragmentObject, "shaders/brick.frag");
 }
 
 const int OSGRenderer::BLOCK_WIDTH = 1;
@@ -315,30 +339,8 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<Composit
 		//std::cout << vert0.getMaterial() << std::endl;
 	}
 
-	// create white material
-	osg::Material *material = new osg::Material();
-	material->setDiffuse(Material::FRONT, Vec4(0.41, 0.41, 0.41, 1.0));
-	material->setSpecular(Material::FRONT, Vec4(0.0, 0.0, 0.0, 1.0));
-	material->setAmbient(Material::FRONT, Vec4(0.1, 0.1, 0.1, 1.0));
-	material->setEmission(Material::FRONT, Vec4(0.0, 0.0, 0.0, 1.0));
-	material->setShininess(Material::FRONT, 25.0);
-	material->setUserValue("matID", 1);
-
 	osg::StateSet* brickState = geom->getOrCreateStateSet();
-
-	osg::Program* brickProgramObject = new osg::Program;
-	osg::Shader* brickVertexObject =
-		new osg::Shader(osg::Shader::VERTEX);
-	osg::Shader* brickFragmentObject =
-		new osg::Shader(osg::Shader::FRAGMENT);
-
-	brickProgramObject->addShader(brickFragmentObject);
-	brickProgramObject->addShader(brickVertexObject);
-	loadShaderSource(brickVertexObject, "shaders/brick.vert");
-	loadShaderSource(brickFragmentObject, "shaders/brick.frag");
-
-	brickState->setAttributeAndModes(brickProgramObject, osg::StateAttribute::ON);
-	brickState->addUniform(new osg::Uniform("materialID", 1));
+	brickState->setAttributeAndModes(_blockProgram, osg::StateAttribute::ON);
 
 
 	// Construct the polygon geometry

@@ -2,6 +2,8 @@
 
 #include "BlockGrid.h"
 
+#include <osg/Material>
+
 #include <PolyVox/Mesh.h>
 #include <PolyVox\CubicSurfaceExtractor.h>
 
@@ -10,6 +12,8 @@ class OSGRenderer
 public:
 	OSGRenderer();
 	~OSGRenderer();
+
+	static void setUp();
 
 	void render(BlockGrid& grid);
 
@@ -35,5 +39,8 @@ public:
 	static bool OSGRenderer::loadShaderSource(osg::Shader* obj, const std::string& fileName);
 
 private:
+
+	static osg::Material* _blockMaterial;
+	static osg::Program* _blockProgram;
 };
 
