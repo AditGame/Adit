@@ -132,10 +132,16 @@
     <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="CompositeBlock.cpp" />
     <ClCompile Include="Coords.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="LandGenerator.cpp" />
     <ClCompile Include="noiseutils.cpp" />
+    <ClCompile Include="Options.cpp" />
     <ClCompile Include="OSGRenderer.cpp" />
     <ClCompile Include="osgviewer.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockEnums.h" />
@@ -146,9 +152,15 @@
     <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="CompositeBlock.h" />
     <ClInclude Include="Coords.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="LandGenerator.h" />
     <ClInclude Include="noiseutils.h" />
+    <ClInclude Include="Options.h" />
     <ClInclude Include="OSGRenderer.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

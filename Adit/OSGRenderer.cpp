@@ -327,23 +327,26 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMater
 	material->setShininess(Material::FRONT, 25.0);
 	material->setUserValue("matID", 1);
 
-	//osg::StateSet* brickState = geom->getOrCreateStateSet();
+	osg::StateSet* brickState = geom->getOrCreateStateSet();
 
 	osg::Program* brickProgramObject = new osg::Program;
 	osg::Shader* brickVertexObject =
 		new osg::Shader(osg::Shader::VERTEX);
 	osg::Shader* brickFragmentObject =
 		new osg::Shader(osg::Shader::FRAGMENT);
-	//brickProgramObject->addShader(brickFragmentObject);
-	//brickProgramObject->addShader(brickVertexObject);
-	//loadShaderSource(brickVertexObject, "shaders/brick.vert");
-	//loadShaderSource(brickFragmentObject, "shaders/brick.frag");
 
-	//brickState->setAttributeAndModes(brickProgramObject, osg::StateAttribute::ON);
-	//brickState->addUniform(new osg::Uniform("materialID", 1));
+	brickProgramObject->addShader(brickFragmentObject);
+	brickProgramObject->addShader(brickVertexObject);
+	loadShaderSource(brickVertexObject, "shaders/brick.vert");
+	loadShaderSource(brickFragmentObject, "shaders/brick.frag");
+
+	brickState->setAttributeAndModes(brickProgramObject, osg::StateAttribute::ON);
+	brickState->addUniform(new osg::Uniform("materialID", 1));
 
 
 	// Construct the polygon geometry
+
+	geom->setStateSet(brickState);
 	geom->setDataVariance(osg::Object::DYNAMIC);
 	geom->setUseDisplayList(false);
 	geom->setUseVertexBufferObjects(true);

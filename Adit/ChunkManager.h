@@ -32,7 +32,7 @@ public:
 	void rebuildChunks();
 	Chunk& getChunk(int x, int y) { return getChunk(Coords(x, y)); }
 
-	Coords blockToChunk(Coords);
+	static Coords blockToChunkCoords(Coords);
 
 	/// Gets the current visibility (a cube arround the player's position, visibility being the "radius")
 	int getVisibility() const { return _visibility; }

@@ -1,30 +1,17 @@
-const vec4 diffuse_color = vec4(1.0, 0.0, 0.0, 1.0);
-const vec4 specular_color = vec4(1.0, 1.0, 1.0, 1.0);
+#version 120
 
-varying float specular_intensity;
-varying float diffuse_intensity;
+varying vec3 v_V;
+varying vec3 v_P;
 
-struct gl_MaterialParameters
-{
- float matID;    // Ecm
-};
+void main() {
+	vec3 N = normalize(cross(dFdy(v_P), dFdx(v_P))); // N is the world normal
+	vec3 V = normalize(v_V);
+	vec3 R = reflect(V, N);
+	vec3 L = normalize(vec3(gl_LightSource[0].position));
 
-uniform float materialID;
+	vec4 ambient = gl_FrontMaterial.ambient;
+	vec4 diffuse = gl_FrontMaterial.diffuse * max(dot(L, N), 0.0);
+	vec4 specular = gl_FrontMaterial.specular * pow(max(dot(R, L), 0.0), gl_FrontMaterial.shininess);
 
-void main(void) {
-	vec4 fragmentColour = vec4(1, 1, 1, 1); // Default value
-	float materialId = gl_Color.x;
-	if(materialId < 0.5) //Avoid '==' when working with floats.
-	{
-	        fragmentColour = vec4(1, 0, 0, 1); // Draw material 0 as red.
-	}
-	else if(materialId < 1.5) //Avoid '==' when working with floats.
-	{
-	        fragmentColour = vec4(0, 1, 0, 1); // Draw material 1 as green.
-	}
-	else if(materialId < 2.5) //Avoid '==' when working with floats.
-	{
-	        fragmentColour = vec4(0, 0, 1, 1); // Draw material 2 as blue.
-	}
-	gl_FragColor = fragmentColour;
+	gl_FragColor = ambient + diffuse + specular;
 }

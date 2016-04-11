@@ -4,6 +4,8 @@
 #include "BlockGrid.h"
 #include "ChunkManager.h"
 
+#include <PolyVoxCore\Density.h>
+
 LandGenerator::LandGenerator(int seed)
 {
 	noiseModule.SetSeed(seed);
@@ -46,7 +48,7 @@ void LandGenerator::fillVolume(const PolyVox::ConstVolumeProxy<CompositeBlock::b
 	{
 		for (int y = reg.getLowerCorner().getY(); y <= reg.getUpperCorner().getY(); y++)
 		{
-			float perlinVal = (float)BlockGrid::gridHeight/4+((heightMap.GetValue(x - reg.getLowerCorner().getX(), y - reg.getLowerCorner().getY()) + 1.0f) / 2.0f)*(float)BlockGrid::gridHeight /4;
+			float perlinVal = (float)BlockGrid::gridHeight/2+heightMap.GetValue(x - reg.getLowerCorner().getX(), y - reg.getLowerCorner().getY())*(float)BlockGrid::gridHeight /4;
 			for (int z = reg.getLowerCorner().getZ(); z <= reg.getUpperCorner().getZ(); z++)
 			{
 				CompositeBlock::blockDataType voxel;

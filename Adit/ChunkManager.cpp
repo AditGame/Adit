@@ -17,7 +17,7 @@
 
 ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _center(-100,-100,-100)
 {
-	_visibility = 4;
+	_visibility = 2;
 }
 
 
@@ -64,7 +64,7 @@ void ChunkManager::rebuildChunks()
 	setCenterChunk(_center, true);
 }
 
-Coords ChunkManager::blockToChunk(Coords in)
+Coords ChunkManager::blockToChunkCoords(Coords in)
 {
 	return Coords(in.x()/Chunk::chunkWidth, in.y()/Chunk::chunkWidth, in.z()/Chunk::chunkHeight);
 }

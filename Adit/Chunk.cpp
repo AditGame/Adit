@@ -14,8 +14,8 @@
 
 #include "BlockGrid.h"
 
-const int Chunk::chunkHeight = 8;
-const int Chunk::chunkWidth = 8;
+const int Chunk::chunkHeight = 16;
+const int Chunk::chunkWidth = 32;
 
 Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) : _parentNode(gridNode), _chunkLocation(chunkLocation), _cubeMeshNode(nullptr), _baseNode(new osg::PositionAttitudeTransform)
 {
