@@ -66,7 +66,10 @@ void Player::movePosition(const osg::Vec3f &pos)
 
 void Player::setRotation(osg::Vec3f newRot)
 {
-	std::cout << _rotation.x() << " " << newRot.x() << std::endl;
+	if (newRot.y() > osg::PI_2) newRot.y() = osg::PI_2;
+	if (newRot.y() < -osg::PI_2) newRot.y() = -osg::PI_2;
+
+	std::cout << _rotation.y() << " " << newRot.y() << std::endl;
 	_rotation = newRot;
 
 	osg::Quat bottomQuat;

@@ -56,6 +56,11 @@ void ChunkManager::rebuildChunks()
 {
 	for (chunkMap_type::iterator it = _chunkMap.begin(); it != _chunkMap.end(); it++)
 	{
+		dirtyChunks_type::iterator find = std::find(_dirtyChunks.begin(), _dirtyChunks.end(), it->second);
+		if (it != _chunkMap.end())
+		{
+			_dirtyChunks.erase(find);
+		}
 		delete it->second;
 	}
 	_chunkMap.clear();

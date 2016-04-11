@@ -14,7 +14,6 @@ InputHandler::InputHandler(BlockGrid* grid, GameEngine* eng) :
 	_eng(eng),
 	_cursorLock(true)
 {
-	setCursorLock(true);
 
 	Options opt = Options::instance();
 
@@ -182,12 +181,15 @@ void InputHandler::setCursorLock(bool v)
 {
 	_cursorLock = v;
 	osgViewer::ViewerBase::Windows windows;
-	GameEngine::inst().getViewer()->getWindows(windows, true);
-	if (windows.size() != 0)
+	if (GameEngine::inst().getViewer() != nullptr)
 	{
-		if(_cursorLock)
-			windows[0]->setCursor(osgViewer::GraphicsWindow::MouseCursor::NoCursor);
-		else
-			windows[0]->setCursor(osgViewer::GraphicsWindow::MouseCursor::InheritCursor);
+		GameEngine::inst().getViewer()->getWindows(windows, true);
+		if (windows.size() != 0)
+		{
+			if (_cursorLock)
+				windows[0]->setCursor(osgViewer::GraphicsWindow::MouseCursor::NoCursor);
+			else
+				windows[0]->setCursor(osgViewer::GraphicsWindow::MouseCursor::InheritCursor);
+		}
 	}
 }
