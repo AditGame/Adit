@@ -14,6 +14,8 @@ InputHandler::InputHandler(BlockGrid* grid, GameEngine* eng) :
 	_eng(eng),
 	_cursorLock(true)
 {
+	setCursorLock(true);
+
 	Options opt = Options::instance();
 
 	_channelMap[opt.getInt(Options::OPT_FORWARD)] = Actions::A_Forward;
@@ -92,8 +94,8 @@ void InputHandler::update()
 		float z = _channelValues[A_Jump];
 		if (x != 0 || y != 0 || z != 0)
 		{
-			x *= 0.1f;
-			y *= 0.1f;
+			x *= 0.5f;
+			y *= 0.5f;
 
 			float mag = x*x + y*y;
 			float angle = atan2(y, x);
@@ -134,7 +136,7 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 			return false;
 			break;
 		case osgGA::GUIEventAdapter::KeySymbol::KEY_BackSpace:
-			_cursorLock = !_cursorLock;
+			setCursorLock(!_cursorLock);
 			return false;
 			break;
 		default:
@@ -156,9 +158,13 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 			float mouseX = ea.getX();
 			float mouseY = ea.getY();
 			_player->modRotation(osg::Vec3f((float)(ea.getX() - _oldMouseX) / 1000.0f, (float)(ea.getY() - _oldMouseY) / 1000.0f, 0));
-			//aa.requestWarpPointer(200, 200);
-			if(_cursorLock) 
+			//aa.requestWarpPointer(200, 200);aa
+			if (_cursorLock)
+			{
+				_oldMouseX = ea.getWindowWidth() / 2;
+				_oldMouseY = ea.getWindowHeight() / 2;
 				aa.requestWarpPointer(_oldMouseX, _oldMouseY);
+			}
 			else
 			{
 				_oldMouseX = mouseX;
@@ -169,5 +175,19 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 	}
 	default:
 		return false;
+	}
+}
+
+void InputHandler::setCursorLock(bool v)
+{
+	_cursorLock = v;
+	osgViewer::ViewerBase::Windows windows;
+	GameEngine::inst().getViewer()->getWindows(windows, true);
+	if (windows.size() != 0)
+	{
+		if(_cursorLock)
+			windows[0]->setCursor(osgViewer::GraphicsWindow::MouseCursor::NoCursor);
+		else
+			windows[0]->setCursor(osgViewer::GraphicsWindow::MouseCursor::InheritCursor);
 	}
 }

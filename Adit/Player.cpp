@@ -27,11 +27,6 @@ Player::Player(osg::Group* parentNode) : _parentNode(parentNode), _baseNode(new 
 
 	_baseNode->addChild(footDrawable);
 	_headNode->addChild(headDrawable);
-	//if (_firstPerson)
-	//	_bodySwitch->setAllChildrenOff();
-	//else
-	//	_bodySwitch->setAllChildrenOn();
-
 }
 
 
@@ -111,4 +106,13 @@ void Player::attach(osg::Group * root)
 osg::Node * Player::getEyeNode()
 {
 	return _headNode;
+}
+
+void Player::setFirstPerson(bool v)
+{
+	_firstPerson = v;
+	if (_firstPerson)
+		_bodySwitch->setAllChildrenOff();
+	else
+		_bodySwitch->setAllChildrenOn();
 }

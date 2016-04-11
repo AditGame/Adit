@@ -28,6 +28,8 @@ public:
 
 	osg::Node* getEyeNode();
 
+	void setFirstPerson(bool v);
+
 private:
 	osg::Vec3f _location;
 	osg::Vec3f _rotation;

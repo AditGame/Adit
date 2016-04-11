@@ -24,6 +24,8 @@ public:
 
 	void setPlayer(Player* player) { _player = player; }
 
+	void setCursorLock(bool v);
+
 	typedef std::unordered_map<int, int> channelMap_type;
 	typedef std::unordered_map<int, float> channelValues_type;
 
