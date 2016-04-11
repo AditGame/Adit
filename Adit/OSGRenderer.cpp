@@ -11,10 +11,8 @@
 
 #include <cstdlib>
 
-#include "PolyVoxCore/CubicSurfaceExtractorWithNormals.h"
-#include "PolyVoxCore/MarchingCubesSurfaceExtractor.h"
-#include "PolyVoxCore/SurfaceMesh.h"
-#include "PolyVoxCore/SimpleVolume.h"
+#include "PolyVox/CubicSurfaceExtractor.h"
+#include "PolyVox/MarchingCubesSurfaceExtractor.h"
 
 OSGRenderer::OSGRenderer()
 {
@@ -270,7 +268,7 @@ void OSGRenderer::createFace(osg::Geometry* geometry, osg::Vec3d position, OSGRe
 
 bool withinFloatbounds(float val, int com) { return val > (float)com - 0.5f && val < (float)com + 0.5f; }
 
-osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMaterial> &mesh)
+osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh)
 {
 	using namespace PolyVox;
 	using namespace std;
@@ -281,24 +279,23 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMater
 
 	geom->setUseVertexBufferObjects(true);
 
-	const vector<uint32_t>& vecIndices = mesh.getIndices();
-	const vector<PositionMaterial>& vecVertices = mesh.getVertices();
+	const PolyVox::DefaultIndexType* vecIndices = mesh.getRawIndexData();
+	const PolyVox::CubicVertex<CompositeBlock::blockDataType>* vecVertices = mesh.getRawVertexData();
 
-	if (vecIndices.size() == 0 || vecVertices.size() == 0) return geode;
+	if (mesh.getNoOfIndices() == 0 || mesh.getNoOfVertices() == 0) return geode;
 
 	osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(GL_TRIANGLES, mesh.getNoOfIndices());
 
 	for (uint i = 0; i < mesh.getNoOfIndices(); i++) {
 		(*indices)[i] = vecIndices[i];
-
 	}
 
 	// The vertex array shared by both the polygon and the border
 	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(mesh.getNoOfVertices());
 
 	for (uint i = 0; i < mesh.getNoOfVertices(); i++) {
-		PositionMaterial vert0 = vecVertices[i];
-		(*vertices)[i].set(vert0.getPosition().getX(), vert0.getPosition().getY(), vert0.getPosition().getZ());
+		PolyVox::CubicVertex<CompositeBlock::blockDataType> vert0 = vecVertices[i];
+		(*vertices)[i].set(vert0.encodedPosition.getX(), vert0.encodedPosition.getY(), vert0.encodedPosition.getZ());
 
 	}
 
@@ -306,12 +303,12 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::SurfaceMesh<PolyVox::PositionMater
 	osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(mesh.getNoOfVertices());
 
 	for (uint i = 0; i < mesh.getNoOfVertices(); i++) {
-		PositionMaterial vert0 = vecVertices[i];
-		if(withinFloatbounds(vert0.getMaterial(),BlockType::BlockType_Stone))
+		PolyVox::CubicVertex<CompositeBlock::blockDataType> vert0 = vecVertices[i];
+		if(withinFloatbounds(vert0.data,BlockType::BlockType_Stone))
 			(*colors)[i].set(0.41f, 0.41f, 0.41f, 0.0f);
-		else if (withinFloatbounds(vert0.getMaterial(), BlockType::BlockType_Grass))
+		else if (withinFloatbounds(vert0.data, BlockType::BlockType_Grass))
 			(*colors)[i].set(0.22f, 0.36f, 0.20f, 0.0f);
-		else if (withinFloatbounds(vert0.getMaterial(), BlockType::BlockType_Dirt))
+		else if (withinFloatbounds(vert0.data, BlockType::BlockType_Dirt))
 			(*colors)[i].set(0.53f, 0.26f, 0.12f, 0.0f);
 		else
 			(*colors)[i].set(0.0f, 0.0f, 1.0f, 0.0f);

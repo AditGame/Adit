@@ -3,7 +3,7 @@
 #include "ChunkManager.h"
 #include "CompositeBlock.h"
 
-#include <PolyVoxCore\LargeVolume.h>
+#include <PolyVox\PagedVolume.h>
 
 class BlockGrid
 {
@@ -13,7 +13,7 @@ public:
 
 	static const int gridHeight;
 
-	typedef PolyVox::LargeVolume<CompositeBlock::blockDataType> blockMap_type;
+	typedef PolyVox::PagedVolume<CompositeBlock::blockDataType> blockMap_type;
 
 	ChunkManager* chunkManager;
 	CompositeBlock::blockDataType getBlock(Coords location);
@@ -22,11 +22,11 @@ public:
 
 	osg::ref_ptr<osg::Group> getBaseNode() { return _baseNode; }
 
-	blockMap_type* getBlockMap() { return &_blockmap; }
+	blockMap_type* getBlockMap() { return _blockmap; }
 
 private:
 	//Chunk Data
-	blockMap_type _blockmap;
+	blockMap_type* _blockmap;
 
 	//OSG Render data
 	osg::ref_ptr<osg::Group> _parentNode;

@@ -6,8 +6,7 @@
 
 #include "Coords.h"
 
-#include "PolyVoxCore\SimpleVolume.h"
-#include <PolyVoxCore\Region.h>
+#include <PolyVox\Region.h>
 
 class BlockGrid;
 

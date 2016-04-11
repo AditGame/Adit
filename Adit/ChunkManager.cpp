@@ -5,10 +5,6 @@
 #include <string>
 #include <iostream>
 
-#include <PolyVoxCore\ConstVolumeProxy.h>
-#include <PolyVoxCore\SurfaceMesh.h>
-#include <PolyVoxCore\CubicSurfaceExtractorWithNormals.h>
-
 #include <osg/Geode>
 
 #include "BlockGrid.h"
@@ -44,23 +40,13 @@ void ChunkManager::updateChunks()
 
 Chunk& ChunkManager::getChunk(Coords coords)
 {
-	/*chunkMap_iterator it = _chunkMap.find(coords);
-	if (it != _chunkMap.end())
-		return *(it->second);
-	else*/
-		return Chunk(coords, _gridContainer->getBaseNode());
-	//TODO: Better "no chunk" logic
+	return Chunk(coords, _gridContainer->getBaseNode());
 }
 
 void ChunkManager::rebuildChunks()
 {
 	for (chunkMap_type::iterator it = _chunkMap.begin(); it != _chunkMap.end(); it++)
 	{
-		dirtyChunks_type::iterator find = std::find(_dirtyChunks.begin(), _dirtyChunks.end(), it->second);
-		if (it != _chunkMap.end())
-		{
-			_dirtyChunks.erase(find);
-		}
 		delete it->second;
 	}
 	_chunkMap.clear();
@@ -83,6 +69,11 @@ void ChunkManager::setCenterChunk(Coords center, bool force)
 	{
 		if (it->first.dist_squared_2D(center) > _visibility * _visibility)
 		{
+			dirtyChunks_type::iterator find = std::find(_dirtyChunks.begin(), _dirtyChunks.end(), it->second);
+			if (find != _dirtyChunks.end())
+			{
+				_dirtyChunks.erase(find);
+			}
 			delete it->second;
 			it = _chunkMap.erase(it); //returns next element
 		}
@@ -122,17 +113,4 @@ void ChunkManager::moveCenterChunk(Coords movement)
 	movement = movement + _center;
 	std::cout << _center << "=>" << movement << std::endl;
 	setCenterChunk(movement);
-}
-
-
-void ChunkManager::loadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& volume, const PolyVox::Region& reg)
-{
-	std::cout << "warning loading region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
-	LandGenerator gen;
-	gen.fillVolume(volume, reg);
-}
-
-void ChunkManager::unloadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& /*vol*/, const PolyVox::Region& reg)
-{
-	std::cout << "warning unloading region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
 }

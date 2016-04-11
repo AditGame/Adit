@@ -4,7 +4,7 @@
 
 #include <osg/Vec3i>
 
-#include <PolyVoxCore\Vector.h>
+#include <PolyVox\Vector.h>
 
 //osg Vec2i class with additions
 class Coords

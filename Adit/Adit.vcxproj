@@ -87,12 +87,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSG_INCLUDE_PATH);D:\libs\OSG\include;D:\libs\noise\include;D:\libs\PolyVox\PolyVoxCore\include;D:\libs\PolyVox\PolyVoxUtil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSG_INCLUDE_PATH);D:\libs\OSG\include;D:\libs\noise\include;D:\libs\PolyVox\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>osgd.lib;osgGAd.lib;osgDBd.lib;osgViewerd.lib;osgTextd.lib;osgUtild.lib;OpenThreadsd.lib;libnoised.lib;PolyVoxCore.lib;PolyVoxUtil.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OSG_LIB_PATH);D:\libs\OSG\lib;D:\libs\noise\lib;D:\libs\PolyVox\PolyVoxCore\lib;D:\libs\PolyVox\PolyVoxUtil\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>osgd.lib;osgGAd.lib;osgDBd.lib;osgViewerd.lib;osgTextd.lib;osgUtild.lib;OpenThreadsd.lib;libnoised.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OSG_LIB_PATH);D:\libs\OSG\lib;D:\libs\noise\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,7 +121,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OSG_LIB_PATH);D:\libs\OSG\lib;D:\libs\noise\lib;D:\libs\PolyVox\PolyVoxCore\lib;D:\libs\PolyVox\PolyVoxUtil\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OSG_LIB_PATH);D:\libs\OSG\lib;D:\libs\noise\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -134,6 +134,7 @@
     <ClCompile Include="Coords.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="GeneratorBase.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="LandGenerator.cpp" />
     <ClCompile Include="noiseutils.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="osgviewer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerCamera.cpp" />
+    <ClCompile Include="VolumePager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockEnums.h" />
@@ -154,6 +156,7 @@
     <ClInclude Include="Coords.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="GeneratorBase.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="LandGenerator.h" />
     <ClInclude Include="noiseutils.h" />
@@ -161,6 +164,7 @@
     <ClInclude Include="OSGRenderer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCamera.h" />
+    <ClInclude Include="VolumePager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

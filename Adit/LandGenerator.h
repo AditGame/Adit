@@ -3,19 +3,19 @@
 #include <noise/noise.h>
 #include "noiseutils.h"
 
-#include <PolyVoxCore\ConstVolumeProxy.h>
 
 #include "CompositeBlock.h"
+#include "GeneratorBase.h"
 
 class Chunk;
 
-class LandGenerator
+class LandGenerator : public GeneratorBase
 {
 public:
 	LandGenerator(int seed = 0);
 	~LandGenerator();
 
-	void fillVolume(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& volume, const PolyVox::Region& reg);
+	void fillVolume(PolyVox::PagedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg);
 
 private:
 	module::Perlin noiseModule;

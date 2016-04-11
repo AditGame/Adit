@@ -7,7 +7,7 @@
 #include "ChunkLoaderThread.h"
 #include "LandGenerator.h"
 
-#include <PolyVoxCore\LargeVolume.h>
+#include <PolyVox\PagedVolume.h>
 
 class BlockGrid;
 
@@ -42,10 +42,6 @@ public:
 	void setCenterChunk(int x, int y) { return setCenterChunk(Coords(x, y)); }
 	void setCenterChunk(Coords center, bool force=false);
 	void moveCenterChunk(Coords movement);
-
-	static void loadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& volume, const PolyVox::Region & reg);
-
-	static void unloadRegion(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>&, const PolyVox::Region & reg);
 
 private:
 

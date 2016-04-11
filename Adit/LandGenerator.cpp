@@ -4,7 +4,7 @@
 #include "BlockGrid.h"
 #include "ChunkManager.h"
 
-#include <PolyVoxCore\Density.h>
+#include <PolyVox\Density.h>
 
 LandGenerator::LandGenerator(int seed)
 {
@@ -17,7 +17,7 @@ LandGenerator::~LandGenerator()
 }
 
 
-void LandGenerator::fillVolume(const PolyVox::ConstVolumeProxy<CompositeBlock::blockDataType>& volume, const PolyVox::Region& reg)
+void LandGenerator::fillVolume(PolyVox::PagedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg)
 {
 	const float sizeMod = 80.0f;
 	utils::NoiseMap heightMap;
@@ -44,14 +44,15 @@ void LandGenerator::fillVolume(const PolyVox::ConstVolumeProxy<CompositeBlock::b
 	writer.SetDestFilename("tutorial.bmp");
 	writer.WriteDestFile();
 
-	for (int x = reg.getLowerCorner().getX(); x <= reg.getUpperCorner().getX(); x++)
+	for (int x = 0; x < reg.getWidthInVoxels(); x++)
 	{
-		for (int y = reg.getLowerCorner().getY(); y <= reg.getUpperCorner().getY(); y++)
+		for (int y = 0; y < reg.getDepthInVoxels(); y++)
 		{
-			float perlinVal = (float)BlockGrid::gridHeight/2+heightMap.GetValue(x - reg.getLowerCorner().getX(), y - reg.getLowerCorner().getY())*(float)BlockGrid::gridHeight /4;
-			for (int z = reg.getLowerCorner().getZ(); z <= reg.getUpperCorner().getZ(); z++)
+			float perlinVal = (float)BlockGrid::gridHeight/2+heightMap.GetValue(x, y)*(float)BlockGrid::gridHeight /4;
+			for (int chunkZ = 0; chunkZ < reg.getHeightInVoxels(); chunkZ++)
 			{
 				CompositeBlock::blockDataType voxel;
+				int z = chunkZ + reg.getLowerZ();
 				if (z < perlinVal - 3)
 				{
 					voxel = BlockType::BlockType_Stone;
@@ -69,7 +70,7 @@ void LandGenerator::fillVolume(const PolyVox::ConstVolumeProxy<CompositeBlock::b
 					voxel = BlockType::BlockType_Default;
 				}
 
-				volume.setVoxelAt(x, y, z, voxel);
+				volume->setVoxel(x, y, chunkZ, voxel);
 			}
 		}
 	}
