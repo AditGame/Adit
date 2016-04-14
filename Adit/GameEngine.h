@@ -2,11 +2,13 @@
 
 #include "BlockGrid.h"
 
+
 #include <osgViewer\Viewer>
 
 class InputHandler;
 class Player;
 class PlayerCamera;
+class PhysicsEngine;
 
 class GameEngine
 {
@@ -25,6 +27,7 @@ public:
 	PlayerCamera* getCamera() { return _camera; }
 	osgViewer::Viewer* getViewer() { return viewer; }
 	BlockGrid* getGrid() { return _grid; }
+	PhysicsEngine* getPhysics() { return _physics; }
 private:
 
 	//is singleton
@@ -42,9 +45,13 @@ private:
 	//Handles keyboard input
 	InputHandler* _input;
 
+	//Handles/Steps the physics engine
+	PhysicsEngine* _physics;
+
+	bool _debugDraw;
+
 	// OSG Data
 	osg::ref_ptr<osg::Group> root;
-
 	osgViewer::Viewer* viewer;
 
 };

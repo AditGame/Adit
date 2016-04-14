@@ -3,6 +3,7 @@
 #include "BlockGrid.h"
 
 #include <osg/Material>
+#include <osg/Geometry>
 
 #include <PolyVox/Mesh.h>
 #include <PolyVox\CubicSurfaceExtractor.h>
@@ -32,7 +33,7 @@ public:
 
 	static osg::Geometry* cubeGeometry;
 
-	static osg::Geode* meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh);
+	static osg::Geode* meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh, osg::Geometry* geo = new osg::Geometry());
 
 	static const int BLOCK_WIDTH;
 

@@ -292,14 +292,13 @@ void OSGRenderer::createFace(osg::Geometry* geometry, osg::Vec3d position, OSGRe
 
 bool withinFloatbounds(float val, int com) { return val > (float)com - 0.5f && val < (float)com + 0.5f; }
 
-osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh)
+osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh, osg::Geometry* geom)
 {
 	using namespace PolyVox;
 	using namespace std;
 	using namespace osg;
 
 	osg::Geode* geode = new osg::Geode();
-	osg::Geometry* geom = new osg::Geometry();
 
 	geom->setUseVertexBufferObjects(true);
 

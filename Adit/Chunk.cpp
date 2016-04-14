@@ -11,12 +11,24 @@
 #include <PolyVox\Vector.h>
 #include <PolyVox\CubicSurfaceExtractor.h>
 
+#include <osgbCollision\CollisionShapes.h>
+
 #include "BlockGrid.h"
+
+#include "GameEngine.h"
+#include "PhysicsEngine.h"
 
 const int Chunk::chunkHeight = 16;
 const int Chunk::chunkWidth = 32;
 
-Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) : _parentNode(gridNode), _chunkLocation(chunkLocation), _cubeMeshNode(nullptr), _baseNode(new osg::PositionAttitudeTransform)
+Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) : 
+	_parentNode(gridNode), 
+	_chunkLocation(chunkLocation), 
+	_cubeMeshNode(nullptr), 
+	_baseNode(new osg::PositionAttitudeTransform), 
+	_physShape(nullptr),
+	_rigidBody(nullptr),
+	_motionState(nullptr)
 {
 	if (gridNode != nullptr)
 		attachToGrid(gridNode);
@@ -24,8 +36,16 @@ Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) : _parentNode(gridNode)
 
 Chunk::~Chunk()
 {
-	if(_parentNode!=nullptr)
+	if (_parentNode != nullptr)
 		_parentNode->removeChild(_baseNode);
+
+	if (_rigidBody != nullptr)
+	{
+		GameEngine::inst().getPhysics()->getWorld()->removeRigidBody(_rigidBody);
+		delete _physShape;
+		delete _rigidBody;
+		delete _motionState;
+	}
 }
 
 void Chunk::attachToGrid(osg::Group * gridNode)
@@ -52,11 +72,38 @@ void Chunk::rebuild(BlockGrid* grid)
 	using namespace PolyVox;
 	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
 
-	PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > mesh = extractCubicMesh(grid->getBlockMap(), reg);
+	PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType>> mesh = extractCubicMesh(grid->getBlockMap(), reg);
 
 	if (_cubeMeshNode != nullptr) 
 		_baseNode->removeChild(_cubeMeshNode);
-	_cubeMeshNode = OSGRenderer::meshToGeode(mesh);
+	osg::Geometry* geom = new osg::Geometry();
+	_cubeMeshNode = OSGRenderer::meshToGeode(mesh, geom);
 	_baseNode->addChild(_cubeMeshNode);
 
+	//Delete the old collision shape if it exists
+	if (_physShape != nullptr)
+		delete _physShape;
+
+	//generate a collision shape from the simplified mesh
+	_physShape = osgbCollision::btConvexHullCollisionShapeFromOSG(_baseNode);
+
+	//set up the rigid body
+	if (_rigidBody == nullptr)
+	{
+		//_motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(_chunkLocation.x()*Chunk::chunkWidth, _chunkLocation.y()*Chunk::chunkWidth, _chunkLocation.z()*Chunk::chunkHeight)));
+		
+		_motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0,0,0)));
+
+		btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, _motionState, _physShape, btVector3(0, 0, 0));
+
+		_rigidBody = new btRigidBody(groundRigidBodyCI);
+	}
+	else
+	{
+		GameEngine::inst().getPhysics()->getWorld()->removeRigidBody(_rigidBody);
+		_rigidBody->setCollisionShape(_physShape);
+	}
+
+	//add the rigid body to the world
+	GameEngine::inst().getPhysics()->getWorld()->addRigidBody(_rigidBody);
 }

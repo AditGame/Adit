@@ -21,6 +21,8 @@ BlockGrid::BlockGrid(osg::Group* rootNode) : _parentNode(rootNode)
 BlockGrid::~BlockGrid()
 {
 	_parentNode->removeChild(_baseNode);
+	_blockmap->flushAll();
+	delete _blockmap;
 }
 
 CompositeBlock::blockDataType BlockGrid::getBlock(Coords location)

@@ -15,19 +15,23 @@
 #include <osgGA/SphericalManipulator>
 #include <osgGA/NodeTrackerManipulator>
 
+#include <osgbCollision\GLDebugDrawer.h>
+
 #include "InputHandler.h"
 #include "Player.h"
 #include "PlayerCamera.h"
 #include "OSGRenderer.h"
+#include "PhysicsEngine.h"
 
 #include "Options.h"
 
-GameEngine::GameEngine() : root(new osg::Group)
+GameEngine::GameEngine() : root(new osg::Group), _debugDraw(true)
 {
 	_grid = new BlockGrid(root);
 	_input = new InputHandler(_grid, this);
 	_camera = new PlayerCamera(this);
 	_player = new Player(root);
+	_physics = new PhysicsEngine();
 	_camera->attach(_player);
 	_input->setPlayer(_player);
 }
@@ -49,20 +53,22 @@ osgViewer::Viewer* GameEngine::setUpView()
 
 	// set up the camera manipulators.
 	{
-		osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+		//osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
 
-		keyswitchManipulator->addMatrixManipulator('1', "Trackball", new osgGA::TrackballManipulator());
-		keyswitchManipulator->addMatrixManipulator('2', "Flight", new osgGA::FlightManipulator());
-		keyswitchManipulator->addMatrixManipulator('3', "Drive", new osgGA::DriveManipulator());
-		keyswitchManipulator->addMatrixManipulator('4', "Terrain", new osgGA::TerrainManipulator());
-		keyswitchManipulator->addMatrixManipulator('5', "Orbit", new osgGA::OrbitManipulator());
-		keyswitchManipulator->addMatrixManipulator('6', "FirstPerson", new osgGA::FirstPersonManipulator());
-		keyswitchManipulator->addMatrixManipulator('7', "Spherical", new osgGA::SphericalManipulator());
-		keyswitchManipulator->addMatrixManipulator('8', "PlayerCam", _camera->getManipulator());
+		//keyswitchManipulator->addMatrixManipulator('1', "Trackball", new osgGA::TrackballManipulator());
+		//keyswitchManipulator->addMatrixManipulator('2', "Flight", new osgGA::FlightManipulator());
+		//keyswitchManipulator->addMatrixManipulator('3', "Drive", new osgGA::DriveManipulator());
+		//keyswitchManipulator->addMatrixManipulator('4', "Terrain", new osgGA::TerrainManipulator());
+		//keyswitchManipulator->addMatrixManipulator('5', "Orbit", new osgGA::OrbitManipulator());
+		//keyswitchManipulator->addMatrixManipulator('6', "FirstPerson", new osgGA::FirstPersonManipulator());
+		//keyswitchManipulator->addMatrixManipulator('7', "Spherical", new osgGA::SphericalManipulator());
+		//keyswitchManipulator->addMatrixManipulator('8', "PlayerCam", _camera->getManipulator());
 
 
-		viewer->setCameraManipulator(keyswitchManipulator.get());
+		//viewer->setCameraManipulator(keyswitchManipulator.get());
 	}
+
+	viewer->setCameraManipulator(_camera->getManipulator());
 
 	// add the state manipulator
 	viewer->addEventHandler(new osgGA::StateSetManipulator(viewer->getCamera()->getOrCreateStateSet()));
@@ -100,11 +106,26 @@ void GameEngine::go()
 	// add the input handler
 	viewer->addEventHandler(_input);
 
+	//set up the physics debug draw
+	osgbCollision::GLDebugDrawer dbgDraw;
+	if (_debugDraw)
+	{
+		std::cout << "osgbpp: Debug" << std::endl;
+		dbgDraw.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawNormals);
+
+		// Enable debug drawing.
+		root->addChild(dbgDraw.getSceneGraph());
+		_physics->getWorld()->setDebugDrawer(&dbgDraw);
+	}
+
 	viewer->setSceneData(root);
 	viewer->realize();
 
 	osg::Timer* timer = new osg::Timer();
 	while (!viewer->done()) {
+		if (_debugDraw)
+			dbgDraw.BeginDraw();
+
 		osg::ElapsedTime frameTime(timer);
 		delete timer;
 		timer = new osg::Timer();
@@ -112,7 +133,20 @@ void GameEngine::go()
 		_input->update();
 		_grid->update();
 		_player->update(this, frameTime);
+
+		if (_debugDraw)
+		{
+			_physics->getWorld()->debugDrawWorld();
+			dbgDraw.EndDraw();
+		}
+
 		viewer->frame();
 	}
+
+	delete _grid;
+	delete _camera;
+	delete _player;
+	delete _input;
 	Options::instance().save();
+
 }

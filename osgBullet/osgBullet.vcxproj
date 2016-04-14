@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="osgbCollision\BoundingCone.cpp" />
+    <ClCompile Include="osgbCollision\BoundingCylinder.cpp" />
+    <ClCompile Include="osgbCollision\Chart.cpp" />
+    <ClCompile Include="osgbCollision\CollectVerticesVisitor.cpp" />
+    <ClCompile Include="osgbCollision\CollisionShapes.cpp" />
+    <ClCompile Include="osgbCollision\ComputeCylinderVisitor.cpp" />
+    <ClCompile Include="osgbCollision\ComputeShapeVisitor.cpp" />
+    <ClCompile Include="osgbCollision\ComputeTriMeshVisitor.cpp" />
+    <ClCompile Include="osgbCollision\GLDebugDrawer.cpp" />
+    <ClCompile Include="osgbCollision\Utils.cpp" />
+    <ClCompile Include="osgbCollision\Version.cpp" />
+    <ClCompile Include="osgbCollision\VertexAggOp.cpp" />
+    <ClCompile Include="osgbDynamics\Constraints.cpp" />
+    <ClCompile Include="osgbDynamics\CreationRecord.cpp" />
+    <ClCompile Include="osgbDynamics\GroundPlane.cpp" />
+    <ClCompile Include="osgbDynamics\MotionState.cpp" />
+    <ClCompile Include="osgbDynamics\PhysicsState.cpp" />
+    <ClCompile Include="osgbDynamics\PhysicsThread.cpp" />
+    <ClCompile Include="osgbDynamics\RigidBody.cpp" />
+    <ClCompile Include="osgbDynamics\RigidBodyAnimation.cpp" />
+    <ClCompile Include="osgbDynamics\TripleBuffer.cpp" />
+    <ClCompile Include="osgbInteraction\ArticulationRecord.cpp" />
+    <ClCompile Include="osgbInteraction\DragHandler.cpp" />
+    <ClCompile Include="osgbInteraction\GestureHandler.cpp" />
+    <ClCompile Include="osgbInteraction\HandNode.cpp" />
+    <ClCompile Include="osgbInteraction\HandTestEventHandler.cpp" />
+    <ClCompile Include="osgbInteraction\LaunchHandler.cpp" />
+    <ClCompile Include="osgbInteraction\SaveRestoreHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="osgbCollision\BoundingCone.h" />
+    <ClInclude Include="osgbCollision\BoundingCylinder.h" />
+    <ClInclude Include="osgbCollision\Chart.h" />
+    <ClInclude Include="osgbCollision\CollectVerticesVisitor.h" />
+    <ClInclude Include="osgbCollision\CollisionShapes.h" />
+    <ClInclude Include="osgbCollision\ComputeCylinderVisitor.h" />
+    <ClInclude Include="osgbCollision\ComputeShapeVisitor.h" />
+    <ClInclude Include="osgbCollision\ComputeTriMeshVisitor.h" />
+    <ClInclude Include="osgbCollision\GLDebugDrawer.h" />
+    <ClInclude Include="osgbCollision\RefBulletObject.h" />
+    <ClInclude Include="osgbCollision\Utils.h" />
+    <ClInclude Include="osgbCollision\Version.h" />
+    <ClInclude Include="osgbCollision\VertexAggOp.h" />
+    <ClInclude Include="osgbDynamics\Constraints.h" />
+    <ClInclude Include="osgbDynamics\CreationRecord.h" />
+    <ClInclude Include="osgbDynamics\GroundPlane.h" />
+    <ClInclude Include="osgbDynamics\MotionState.h" />
+    <ClInclude Include="osgbDynamics\PhysicsState.h" />
+    <ClInclude Include="osgbDynamics\PhysicsThread.h" />
+    <ClInclude Include="osgbDynamics\RigidBody.h" />
+    <ClInclude Include="osgbDynamics\RigidBodyAnimation.h" />
+    <ClInclude Include="osgbDynamics\TripleBuffer.h" />
+    <ClInclude Include="osgbInteraction\ArticulationRecord.h" />
+    <ClInclude Include="osgbInteraction\DragHandler.h" />
+    <ClInclude Include="osgbInteraction\GestureHandler.h" />
+    <ClInclude Include="osgbInteraction\HandNode.h" />
+    <ClInclude Include="osgbInteraction\HandTestEventHandler.h" />
+    <ClInclude Include="osgbInteraction\LaunchHandler.h" />
+    <ClInclude Include="osgbInteraction\SaveRestoreHandler.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="osgBullet.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2AEA85A2-7218-405A-AE6A-2FD1ACF9BE5C}</ProjectGuid>
+    <RootNamespace>osgBullet</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\libs\OSG\include;%(AdditionalIncludeDirectories);D:\libs\osgWorks\include;D:\libs\Bullet\include;D:\libs\osgWorks\include;D:\Documents\GitHub\Adit\osgBullet</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>D:\libs\OSG\lib;D:\libs\osgWorks\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>osgd.lib;osgGAd.lib;osgDBd.lib;osgViewerd.lib;osgTextd.lib;osgUtild.lib;OpenThreadsd.lib;osgwToolsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\libs\OSG\include;D:\libs\Bullet\include;%(AdditionalIncludeDirectories);D:\libs\osgWorks\include;D:\libs\Bullet\include;D:\libs\osgWorks\include;D:\Documents\GitHub\Adit\osgBullet</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\libs\OSG\lib;D:\libs\osgWorks\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>osg.lib;osgGA.lib;osgDB.lib;osgViewer.lib;osgText.lib;osgUtil.lib;OpenThreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
