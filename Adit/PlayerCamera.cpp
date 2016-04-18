@@ -3,26 +3,16 @@
 #include <osg/ObserverNodePath>
 
 #include "GameEngine.h"
+#include "PhysicsEngine.h"
 
 #include "Player.h"
 
 PlayerCamera::PlayerCamera(GameEngine* eng) : eng(eng), _distance(15.0), _firstPerson(false)
 {
-	manipulator = new osgGA::NodeTrackerManipulator();
-	manipulator->setDistance(20.0f);
-	manipulator->setAutoComputeHomePosition(false);
 }
 
 PlayerCamera::~PlayerCamera()
 {
-	delete manipulator;
-}
-
-void PlayerCamera::attach(Player* player)
-{
-	manipulator->setTrackerMode(osgGA::NodeTrackerManipulator::TrackerMode::NODE_CENTER_AND_ROTATION);
-	manipulator->setRotationMode(osgGA::NodeTrackerManipulator::RotationMode::ELEVATION_AZIM);
-	manipulator->setTrackNode(player->getEyeNode());
 }
 
 void PlayerCamera::update()
@@ -53,7 +43,31 @@ void PlayerCamera::update()
 		float z = sin(pitch);
 
 		eye = osg::Vec3d(lookAt.x() + x*_distance, lookAt.y() + y*_distance, lookAt.z() + z*_distance);
+
+		eye = getBestCameraPosition(lookAt, eye);
 	}
 
 	GameEngine::inst().getViewer()->getCamera()->setViewMatrixAsLookAt(eye, lookAt, osg::Vec3d(0, 0, 1));
+}
+
+osg::Vec3d PlayerCamera::getBestCameraPosition(osg::Vec3d start, osg::Vec3d end)
+{
+	btVector3 btFrom = osgbCollision::asBtVector3(start);
+	btVector3 btTo = osgbCollision::asBtVector3(end);
+	btCollisionWorld::ClosestConvexResultCallback res(btFrom, btTo);
+	res.m_collisionFilterMask = btBroadphaseProxy::StaticFilter;
+
+	btConvexShape* shape = new btSphereShape(0.25);
+
+	btTransform startTransform(btMatrix3x3(btQuaternion(0, 0, 0, 1)), btFrom);
+	btTransform endTransform(btMatrix3x3(btQuaternion(0, 0, 0, 1)), btTo);
+
+	GameEngine::inst().getPhysics()->getWorld()->convexSweepTest(shape, startTransform, endTransform, res);
+
+	if (res.hasHit())
+	{
+		return osgbCollision::asOsgVec3(res.m_hitPointWorld);
+	}
+
+	return end;
 }

@@ -11,15 +11,12 @@ public:
 	PlayerCamera(GameEngine* eng);
 	~PlayerCamera();
 
-	void attach(Player * player);
-
-	osgGA::CameraManipulator* getManipulator() { return manipulator; }
-
 	void update();
 
 private:
 	GameEngine* eng;
-	osgGA::NodeTrackerManipulator* manipulator;
+
+	osg::Vec3d getBestCameraPosition(osg::Vec3d start, osg::Vec3d end);
 
 	float _distance;
 

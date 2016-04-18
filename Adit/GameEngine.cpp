@@ -36,7 +36,6 @@ void GameEngine::setup()
 	_camera = new PlayerCamera(this);
 	_physics = new PhysicsEngine();
 	_player = new Player(root);
-	_camera->attach(_player);
 	_input->setPlayer(_player);
 
 	viewer = setUpView();
