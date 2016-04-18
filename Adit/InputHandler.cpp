@@ -125,6 +125,7 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 			return false;
 		}
 	}
+	break;
 	case(osgGA::GUIEventAdapter::KEYUP) :
 	{
 		channelMap_type::iterator it = _channelMap.find(ea.getKey());
@@ -132,6 +133,7 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 		{
 			_channelValues[it->second] = 0.0f;
 		}
+		break;
 	}
 	case(osgGA::GUIEventAdapter::MOVE) :
 	{
@@ -153,6 +155,25 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 				_oldMouseY = mouseY;
 			}
 
+		}
+		break;
+	}
+	case(osgGA::GUIEventAdapter::SCROLL) :
+	{
+		switch (ea.getScrollingMotion())
+		{
+			case(osgGA::GUIEventAdapter::SCROLL_UP) :
+			{
+				GameEngine::inst().getCamera()->modDistance(-1);
+			}
+													break;
+			case(osgGA::GUIEventAdapter::SCROLL_DOWN) :
+			{
+				GameEngine::inst().getCamera()->modDistance(1);
+			}
+													  break;
+			default:
+				return false;
 		}
 	}
 	default:

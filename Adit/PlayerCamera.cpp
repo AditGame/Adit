@@ -7,6 +7,9 @@
 
 #include "Player.h"
 
+float PlayerCamera::_minDistance = 2;
+float PlayerCamera::_maxDistance = 20;
+
 PlayerCamera::PlayerCamera(GameEngine* eng) : eng(eng), _distance(15.0), _firstPerson(false)
 {
 }
@@ -29,7 +32,13 @@ void PlayerCamera::update()
 		eye = osg::computeLocalToWorld(GameEngine::inst().getPlayer()->getEyeNode()->getParentalNodePaths().at(0)).getTrans();
 		osg::Vec3d rot = GameEngine::inst().getPlayer()->getRotation();
 
-		lookAt = osg::Vec3d(eye.x() + cos(rot.x())*_distance, eye.y() + sin(rot.x())*_distance, eye.z() + sin(-rot.y())*_distance);
+		float yaw = -rot.x() - osg::PI_2;
+		float pitch = -rot.y();
+		float x = -cos(yaw)*cos(pitch);
+		float y = -sin(yaw)*cos(pitch);
+		float z = -sin(pitch);
+
+		lookAt = osg::Vec3d(eye.x() + x, eye.y() + y, eye.z() + z);
 	}
 	else
 	{
@@ -48,6 +57,46 @@ void PlayerCamera::update()
 	}
 
 	GameEngine::inst().getViewer()->getCamera()->setViewMatrixAsLookAt(eye, lookAt, osg::Vec3d(0, 0, 1));
+}
+
+void PlayerCamera::setDistance(float dist)
+{
+	if (dist < _minDistance)
+		dist = _minDistance;
+
+	if (dist > _maxDistance)
+		dist = _maxDistance;
+
+	_distance = dist;
+
+	if (dist <= _minDistance)
+	{
+		setFirstPerson(true);
+	}
+	else
+	{
+		setFirstPerson(false);
+	}
+
+}
+
+void PlayerCamera::setFirstPerson(bool mode)
+{
+	if (mode == _firstPerson)
+		return; //no need to do anything if already set up
+	
+	_firstPerson = mode;
+
+	if (mode)
+	{
+		GameEngine::inst().getPlayer()->setFirstPerson(true);
+		_distance = _minDistance; //move distance to min distance
+	}
+	else
+	{
+		GameEngine::inst().getPlayer()->setFirstPerson(false);
+		_distance = _minDistance + 1.0;
+	}
 }
 
 osg::Vec3d PlayerCamera::getBestCameraPosition(osg::Vec3d start, osg::Vec3d end)

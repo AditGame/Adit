@@ -58,25 +58,6 @@ osgViewer::Viewer* GameEngine::setUpView()
 	viewer->setUpViewOnSingleScreen(osg::GraphicsContext::ScreenIdentifier(0).screenNum);
 	//viewer.setUpViewInWindow(20, 20, 400, 400, 1);
 
-	// set up the camera manipulators.
-	{
-		//osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
-
-		//keyswitchManipulator->addMatrixManipulator('1', "Trackball", new osgGA::TrackballManipulator());
-		//keyswitchManipulator->addMatrixManipulator('2', "Flight", new osgGA::FlightManipulator());
-		//keyswitchManipulator->addMatrixManipulator('3', "Drive", new osgGA::DriveManipulator());
-		//keyswitchManipulator->addMatrixManipulator('4', "Terrain", new osgGA::TerrainManipulator());
-		//keyswitchManipulator->addMatrixManipulator('5', "Orbit", new osgGA::OrbitManipulator());
-		//keyswitchManipulator->addMatrixManipulator('6', "FirstPerson", new osgGA::FirstPersonManipulator());
-		//keyswitchManipulator->addMatrixManipulator('7', "Spherical", new osgGA::SphericalManipulator());
-		//keyswitchManipulator->addMatrixManipulator('8', "PlayerCam", _camera->getManipulator());
-
-
-		//viewer->setCameraManipulator(keyswitchManipulator.get());
-	}
-
-	//viewer->setCameraManipulator(_camera->getManipulator());
-
 	// add the state manipulator
 	viewer->addEventHandler(new osgGA::StateSetManipulator(viewer->getCamera()->getOrCreateStateSet()));
 
