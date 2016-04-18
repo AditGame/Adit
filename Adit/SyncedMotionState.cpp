@@ -4,7 +4,7 @@
 
 #include "Entity.h"
 
-SyncedMotionState::SyncedMotionState(const btTransform &initialPosition, Entity* ent)
+SyncedMotionState::SyncedMotionState(const btTransform &initialPosition, Entity* ent, bool syncRotation) : _syncRotation(syncRotation)
 {
 	_entity = ent;
 	_initialPosition = initialPosition;
@@ -20,8 +20,11 @@ void SyncedMotionState::setWorldTransform(const btTransform & worldTrans)
 	if (_entity == nullptr)
 		return; // silently return before we set a node
 
-	btQuaternion rot = worldTrans.getRotation();
-	_entity->getBaseNode()->setAttitude(osg::Quat(rot.w(), rot.x(), rot.y(), rot.z()));
+	if (_syncRotation)
+	{
+		btQuaternion rot = worldTrans.getRotation();
+		_entity->getBaseNode()->setAttitude(osg::Quat(rot.w(), rot.x(), rot.y(), rot.z()));
+	}
 	
 	osg::Vec3f pos = osgbCollision::asOsgVec3(worldTrans.getOrigin());
 	_entity->setPosition(pos, false);

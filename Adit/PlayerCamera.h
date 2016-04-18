@@ -15,8 +15,13 @@ public:
 
 	osgGA::CameraManipulator* getManipulator() { return manipulator; }
 
+	void update();
+
 private:
 	GameEngine* eng;
 	osgGA::NodeTrackerManipulator* manipulator;
-};
 
+	float _distance;
+
+	bool _firstPerson;
+};

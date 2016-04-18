@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="BlockGrid.cpp" />
     <ClCompile Include="CharacterController.cpp" />
+    <ClCompile Include="CharacterStats.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkLoader.cpp" />
     <ClCompile Include="ChunkLoaderThread.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="BlockEnums.h" />
     <ClInclude Include="BlockGrid.h" />
     <ClInclude Include="CharacterController.h" />
+    <ClInclude Include="CharacterStats.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkLoader.h" />
     <ClInclude Include="ChunkLoaderThread.h" />

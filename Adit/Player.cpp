@@ -43,7 +43,7 @@ Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135))
 	osg::Matrix matrix;
 	matrix.setRotate(quat);
 	matrix.setTrans(osg::Vec3d(getPosition().x(), getPosition().y(), getPosition().z()));
-	_motionState = new SyncedMotionState(osgbCollision::asBtTransform(matrix), this);
+	_motionState = new SyncedMotionState(osgbCollision::asBtTransform(matrix), this, false);
 
 	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(mass, _motionState, _physShape, inertia);
 	groundRigidBodyCI.m_friction = 0;
@@ -54,6 +54,8 @@ Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135))
 	_rigidBody->setAngularFactor(btVector3(0, 0, 0));
 
 	_rigidBody->setActivationState(DISABLE_DEACTIVATION);
+
+	_rigidBody->setRestitution(0.0);
 
 	GameEngine::inst().getPhysics()->getWorld()->addRigidBody(_rigidBody);
 }
@@ -99,7 +101,7 @@ void Player::setRotation(osg::Vec3f newRot)
 	_headNode->setAttitude(headQuat);
 }
 
-osg::Node * Player::getEyeNode()
+osg::PositionAttitudeTransform * Player::getEyeNode()
 {
 	return _headNode;
 }

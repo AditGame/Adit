@@ -14,6 +14,7 @@
 
 #include "CharacterController.h"
 #include "Movement.h"
+#include "CharacterStats.h"
 
 class Player : public Entity
 {
@@ -25,11 +26,13 @@ public:
 
 	void setRotation(osg::Vec3f);
 
-	osg::Node* getEyeNode();
+	osg::PositionAttitudeTransform* getEyeNode();
 
 	void setFirstPerson(bool v);
 
 	Movement& getMovement() { return _movement; }
+
+	CharacterStats& getStats() { return _stats; }
 
 private:
 
@@ -38,6 +41,8 @@ private:
 	Movement _movement;
 
 	CharacterController _controller;
+
+	CharacterStats _stats;
 
 	//OSG Render Data
 	osg::Switch* _bodySwitch;

@@ -76,7 +76,7 @@ osgViewer::Viewer* GameEngine::setUpView()
 		//viewer->setCameraManipulator(keyswitchManipulator.get());
 	}
 
-	viewer->setCameraManipulator(_camera->getManipulator());
+	//viewer->setCameraManipulator(_camera->getManipulator());
 
 	// add the state manipulator
 	viewer->addEventHandler(new osgGA::StateSetManipulator(viewer->getCamera()->getOrCreateStateSet()));
@@ -159,6 +159,8 @@ void GameEngine::go()
 		_grid->update();
 		_player->update(this, currSimTime - prevSimTime);
 		_physics->update(currSimTime - prevSimTime);
+
+		_camera->update();
 
 		if (_debugDraw)
 		{

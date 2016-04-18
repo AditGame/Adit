@@ -10,7 +10,7 @@ class SyncedMotionState : public btMotionState
 {
 
 public:
-	SyncedMotionState(const btTransform &initialPosition, Entity* ent);
+	SyncedMotionState(const btTransform &initialPosition, Entity* ent, bool syncRotation);
 
 	virtual ~SyncedMotionState();
 
@@ -29,5 +29,7 @@ public:
 protected:
 	Entity* _entity;
 	btTransform _initialPosition;
+
+	bool _syncRotation;
 
 };

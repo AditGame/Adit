@@ -81,46 +81,62 @@ void CharacterController::setUpState(int newState)
 
 void CharacterController::updateState()
 {
+
+	float x = _player->getMovement().forwardBack;
+	float y = _player->getMovement().leftRight;
+	float z = _player->getMovement().jump;
+
+	float angle = atan2(y, x);
+	angle += _player->getRotation().x();
+	angle += 4.71239;
+	angle *= -1;
+
 	switch (_currState)
 	{
 	case On_Ground:
+	{
+		//on ground
+		if (x != 0.0 || y != 0.0 || z != 0.0)
 		{
-			//on ground
-			float x = _player->getMovement().forwardBack;
-			float y = _player->getMovement().leftRight;
-			float z = _player->getMovement().jump;
-			if (x != 0.0 || y != 0.0 || z != 0.0)
-			{
-				if (x < 0.2 && x > -0.2)
-					x = 0.0;
+			float mag = _player->getStats().getRunningSpeed();
 
-				if (y < 0.2 && y > -0.2)
-					y = 0.0;
-
-				float mag = 2;
-				float angle = atan2(y, x);
-
-				angle += _player->getRotation().x();
-				angle += 4.71239;
-				angle *= -1;
-
-				btScalar initZ = _player->getRigidBody()->getLinearVelocity().x();
-				if (z == 0.0)
-					z = initZ;
-				else
-					z *= 5;
-
-				_player->getRigidBody()->setLinearVelocity(btVector3(cos(angle)*mag, sin(angle)*mag, z));
-			}
+			btScalar initZ = _player->getRigidBody()->getLinearVelocity().x();
+			if (z == 0.0)
+				z = initZ;
 			else
-			{
-				_player->getRigidBody()->setLinearVelocity(btVector3(0,0,0));
-			}
+				z *= 5;
+
+			_player->getRigidBody()->setLinearVelocity(btVector3(cos(angle)*mag, sin(angle)*mag, z));
 		}
+		else
+		{
+			_player->getRigidBody()->setLinearVelocity(btVector3(0,0,0));
+		}
+	}
 		break;
 	case In_Air:
 	{
+		//in air
+		if (x != 0.0 || y != 0.0 || z != 0.0)
+		{
+			btVector3 velocity = _player->getRigidBody()->getLinearVelocity();
 
+			float mag = _player->getStats().getRunningSpeed();
+			float angle = atan2(y, x);
+
+			float x = velocity.x();
+			float y = velocity.y();
+			float z = velocity.z();
+
+			if (std::abs(velocity.x() + cos(angle)*mag) < mag)
+				x = velocity.x() + cos(angle)*mag;
+
+			if (std::abs(velocity.y() + sin(angle)*mag) < mag)
+				y = velocity.y() + sin(angle)*mag;
+
+			_player->getRigidBody()->setLinearVelocity(btVector3(x, y, z));
+
+		}
 	}
 		break;
 	}
