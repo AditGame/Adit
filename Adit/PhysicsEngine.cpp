@@ -16,8 +16,8 @@ PhysicsEngine::PhysicsEngine()
 	_solver = new btSequentialImpulseConstraintSolver;
 	_dynamicsWorld = new btDiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
 
-	//Set the gravity (-10, to simplify)
-	_dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	//Set the gravity (-9.8, to simplify)
+	_dynamicsWorld->setGravity(btVector3(0, 0, -9.8f));
 }
 
 
@@ -30,9 +30,9 @@ PhysicsEngine::~PhysicsEngine()
 	delete _dynamicsWorld;
 }
 
-void PhysicsEngine::update(osg::ElapsedTime time)
+void PhysicsEngine::update(btScalar time)
 {
-	_dynamicsWorld->stepSimulation(time.elapsedTime_m() / 1000);
+	_dynamicsWorld->stepSimulation(time);
 }
 
 // Usage example for bullet:

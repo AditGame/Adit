@@ -14,7 +14,7 @@ public:
 	PhysicsEngine();
 	~PhysicsEngine();
 
-	void update(osg::ElapsedTime);
+	void update(btScalar);
 
 	void addVoxelTree(PolyVox::Region & reg);
 

@@ -13,7 +13,7 @@
 
 ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _center(-100,-100,-100)
 {
-	_visibility = 3;
+	_visibility = 2;
 }
 
 
@@ -113,4 +113,14 @@ void ChunkManager::moveCenterChunk(Coords movement)
 	movement = movement + _center;
 	std::cout << _center << "=>" << movement << std::endl;
 	setCenterChunk(movement);
+}
+
+void ChunkManager::processAllDirty()
+{
+	//rebuild one dirty chunk at a time
+	while (_dirtyChunks.size() > 0)
+	{
+		_dirtyChunks.back()->rebuild(_gridContainer);
+		_dirtyChunks.pop_back();
+	}
 }

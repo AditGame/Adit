@@ -33,9 +33,9 @@ public:
 
 	static bool isInBounds(Coords location);
 
-	void rebuild(BlockGrid* grid);
+	bool isEmpty(BlockGrid * volume);
 
-	void createPhysData(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh);
+	void rebuild(BlockGrid* grid);
 
 private:
 	Coords _chunkLocation;
@@ -46,7 +46,7 @@ private:
 	osg::ref_ptr<osg::Geode> _cubeMeshNode;
 
 	//Bullet Physics Data
-	btConvexHullShape* _physShape;
+	btTriangleMeshShape* _physShape;
 	btRigidBody* _rigidBody;
 	btDefaultMotionState* _motionState;
 };

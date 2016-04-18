@@ -43,6 +43,8 @@ public:
 	void setCenterChunk(Coords center, bool force=false);
 	void moveCenterChunk(Coords movement);
 
+	void processAllDirty();
+
 private:
 
 	ChunkManager(const ChunkManager &v) : _center(Coords(-10,-10,-10)) {}

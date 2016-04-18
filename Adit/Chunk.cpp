@@ -61,6 +61,22 @@ bool Chunk::isInBounds(Coords location)
 	return (location.x() < chunkWidth && location.y() < chunkWidth && location.z() < chunkHeight && location.x() >= 0 && location.y() >= 0 && location.z() >= 0);
 }
 
+bool Chunk::isEmpty(BlockGrid* volume)
+{
+	for (int x = _chunkLocation.x()*chunkWidth; x < _chunkLocation.x()*chunkWidth + chunkWidth; x++)
+	{
+		for (int y = _chunkLocation.y()*chunkWidth; y < _chunkLocation.y()*chunkWidth + chunkWidth; y++)
+		{
+			for (int z = _chunkLocation.z()*chunkHeight; z < _chunkLocation.z()*chunkHeight + chunkHeight; z++)
+			{
+				if (volume->getBlockMap()->getVoxel(x, y, z) != BlockType_Default)
+					return false;
+			}
+		}
+	}
+	return true;
+}
+
 void Chunk::rebuild(BlockGrid* grid)
 {
 	int z = _chunkLocation.z()*chunkHeight + chunkHeight;
@@ -68,6 +84,14 @@ void Chunk::rebuild(BlockGrid* grid)
 	PolyVox::Region reg(
 		_chunkLocation.x()*chunkWidth,				_chunkLocation.y()*chunkWidth,				_chunkLocation.z()*chunkHeight,
 		_chunkLocation.x()*chunkWidth + chunkWidth, _chunkLocation.y()*chunkWidth + chunkWidth, z);
+
+	if (isEmpty(grid))
+	{
+		if (_cubeMeshNode != nullptr)
+			_baseNode->removeChild(_cubeMeshNode);
+		_cubeMeshNode = nullptr;
+		return;
+	}
 
 	using namespace PolyVox;
 	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
@@ -85,7 +109,7 @@ void Chunk::rebuild(BlockGrid* grid)
 		delete _physShape;
 
 	//generate a collision shape from the simplified mesh
-	_physShape = osgbCollision::btConvexHullCollisionShapeFromOSG(_baseNode);
+	_physShape = osgbCollision::btTriMeshCollisionShapeFromOSG(_baseNode);
 
 	//set up the rigid body
 	if (_rigidBody == nullptr)

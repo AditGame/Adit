@@ -5,6 +5,7 @@
 #include "BlockGrid.h"
 #include "Player.h"
 #include "GameEngine.h"
+#include "PhysicsEngine.h"
 #include "PlayerCamera.h"
 
 #include "Options.h"
@@ -91,20 +92,10 @@ void InputHandler::update()
 		float x = _channelValues[A_Forward] + -1 * _channelValues[A_Backward];
 		float y = _channelValues[A_Right] + -1 * _channelValues[A_Left];
 		float z = _channelValues[A_Jump];
-		if (x != 0 || y != 0 || z != 0)
-		{
-			x *= 0.5f;
-			y *= 0.5f;
 
-			float mag = x*x + y*y;
-			float angle = atan2(y, x);
-
-			angle += _player->getRotation().x();
-			angle += 4.71239;
-			angle *= -1;
-
-			_player->movePosition(osg::Vec3f(cos(angle)*mag, sin(angle)*mag, z));
-		}
+		_player->getMovement().forwardBack = x;
+		_player->getMovement().leftRight = y;
+		_player->getMovement().jump = z;
 	}
 }
 
@@ -123,15 +114,7 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 		switch (ea.getKey())
 		{
 		case osgGA::GUIEventAdapter::KeySymbol::KEY_I:
-			_grid->chunkManager->rebuildChunks();
-			return false;
-			break;
-		case osgGA::GUIEventAdapter::KeySymbol::KEY_N:
-			_grid->chunkManager->setVisibility(_grid->chunkManager->getVisibility() + 1);
-			return false;
-			break;
-		case osgGA::GUIEventAdapter::KeySymbol::KEY_S:
-			_grid->chunkManager->setVisibility(_grid->chunkManager->getVisibility() - 1);
+			GameEngine::inst().toggleDebugDraw();
 			return false;
 			break;
 		case osgGA::GUIEventAdapter::KeySymbol::KEY_BackSpace:

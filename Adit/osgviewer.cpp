@@ -42,8 +42,9 @@
 
 int go(int argc, char** argv)
 {
-	GameEngine eng = GameEngine::inst();
-	eng.go();
+	GameEngine* eng = &GameEngine::inst();
+	eng->setup();
+	eng->go();
 	return 0;
 }
 

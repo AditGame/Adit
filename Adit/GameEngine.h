@@ -20,6 +20,8 @@ public:
 		return eng;
 	}
 
+	void setup();
+
 	osgViewer::Viewer* setUpView();
 
 	void go();
@@ -28,10 +30,16 @@ public:
 	osgViewer::Viewer* getViewer() { return viewer; }
 	BlockGrid* getGrid() { return _grid; }
 	PhysicsEngine* getPhysics() { return _physics; }
+	Player* getPlayer() { return _player; }
+
+	void toggleDebugDraw() { _debugDraw = !_debugDraw; }
+
 private:
 
 	//is singleton
 	GameEngine();
+	GameEngine(GameEngine const&);              // Don't Implement
+	void operator=(GameEngine const&); // Don't implement
 
 	//contains simple voxel data
 	BlockGrid* _grid;

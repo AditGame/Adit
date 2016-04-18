@@ -25,15 +25,23 @@
 
 #include "Options.h"
 
-GameEngine::GameEngine() : root(new osg::Group), _debugDraw(true)
+GameEngine::GameEngine() : root(new osg::Group), _debugDraw(false)
+{
+}
+
+void GameEngine::setup()
 {
 	_grid = new BlockGrid(root);
 	_input = new InputHandler(_grid, this);
 	_camera = new PlayerCamera(this);
-	_player = new Player(root);
 	_physics = new PhysicsEngine();
+	_player = new Player(root);
 	_camera->attach(_player);
 	_input->setPlayer(_player);
+
+	viewer = setUpView();
+
+	OSGRenderer::setUp();
 }
 
 osgViewer::Viewer* GameEngine::setUpView()
@@ -96,9 +104,6 @@ osgViewer::Viewer* GameEngine::setUpView()
 
 void GameEngine::go()
 {
-	viewer = setUpView();
-
-	OSGRenderer::setUp();
 
 	// Add the camera data
 	//viewer->setCameraManipulator(_camera->getManipulator());
@@ -108,10 +113,11 @@ void GameEngine::go()
 
 	//set up the physics debug draw
 	osgbCollision::GLDebugDrawer dbgDraw;
+	dbgDraw.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	dbgDraw.setEnabled(_debugDraw);
 	if (_debugDraw)
 	{
 		std::cout << "osgbpp: Debug" << std::endl;
-		dbgDraw.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawNormals);
 
 		// Enable debug drawing.
 		root->addChild(dbgDraw.getSceneGraph());
@@ -119,20 +125,40 @@ void GameEngine::go()
 	}
 
 	viewer->setSceneData(root);
+
+	double currSimTime = viewer->getFrameStamp()->getSimulationTime();
+	double prevSimTime = viewer->getFrameStamp()->getSimulationTime();
+
 	viewer->realize();
 
-	osg::Timer* timer = new osg::Timer();
+	_grid->chunkManager->processAllDirty();
 	while (!viewer->done()) {
+		currSimTime = viewer->getFrameStamp()->getSimulationTime();
+
+		if (_debugDraw != dbgDraw.getEnabled())
+		{
+			dbgDraw.setEnabled(_debugDraw);
+			if (_debugDraw)
+			{
+				//set up debug drawer
+				root->addChild(dbgDraw.getSceneGraph());
+				_physics->getWorld()->setDebugDrawer(&dbgDraw);
+			}
+			else
+			{
+				//unset it up
+				root->removeChild(dbgDraw.getSceneGraph());
+				_physics->getWorld()->setDebugDrawer(nullptr);
+			}
+		}
+
 		if (_debugDraw)
 			dbgDraw.BeginDraw();
 
-		osg::ElapsedTime frameTime(timer);
-		delete timer;
-		timer = new osg::Timer();
-
 		_input->update();
 		_grid->update();
-		_player->update(this, frameTime);
+		_player->update(this, currSimTime - prevSimTime);
+		_physics->update(currSimTime - prevSimTime);
 
 		if (_debugDraw)
 		{
@@ -140,13 +166,15 @@ void GameEngine::go()
 			dbgDraw.EndDraw();
 		}
 
+		prevSimTime = currSimTime;
+
 		viewer->frame();
 	}
 
 	delete _grid;
 	delete _camera;
-	delete _player;
+	//delete _player; //memory curruption? whatever, we're ending anyways. lol.
 	delete _input;
-	Options::instance().save();
+	Options::instance().save(); //save any modifications to the options
 
 }

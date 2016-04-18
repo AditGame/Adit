@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlockGrid.cpp" />
+    <ClCompile Include="CharacterController.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkLoader.cpp" />
     <ClCompile Include="ChunkLoaderThread.cpp" />
@@ -146,11 +147,13 @@
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerCamera.cpp" />
+    <ClCompile Include="SyncedMotionState.cpp" />
     <ClCompile Include="VolumePager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockEnums.h" />
     <ClInclude Include="BlockGrid.h" />
+    <ClInclude Include="CharacterController.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkLoader.h" />
     <ClInclude Include="ChunkLoaderThread.h" />
@@ -163,12 +166,14 @@
     <ClInclude Include="Header.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="LandGenerator.h" />
+    <ClInclude Include="Movement.h" />
     <ClInclude Include="noiseutils.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OSGRenderer.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCamera.h" />
+    <ClInclude Include="SyncedMotionState.h" />
     <ClInclude Include="VolumePager.h" />
     <ClInclude Include="VoxTree.h" />
     <ClInclude Include="VoxTreeCoord.h" />

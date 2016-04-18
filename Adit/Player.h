@@ -6,8 +6,14 @@
 #include <osg\Quat>
 #include <osg\PositionAttitudeTransform>
 
+#include <btBulletDynamicsCommon.h>
+
 #include "Entity.h"
 #include "Coords.h"
+#include "SyncedMotionState.h"
+
+#include "CharacterController.h"
+#include "Movement.h"
 
 class Player : public Entity
 {
@@ -15,31 +21,29 @@ public:
 	Player(osg::Group* parentNode = nullptr);
 	~Player();
 	
-	void update(GameEngine* eng, osg::ElapsedTime &time);
-
-	void setPosition(osg::Vec3f);
-	void movePosition(const osg::Vec3f&);
+	void update(GameEngine* eng, btScalar time);
 
 	void setRotation(osg::Vec3f);
-	void modRotation(osg::Vec3f);
-	osg::Vec3f getRotation() { return _rotation; }
-
-	void attach(osg::Group* group);
 
 	osg::Node* getEyeNode();
 
 	void setFirstPerson(bool v);
 
+	Movement& getMovement() { return _movement; }
+
 private:
-	osg::Vec3f _location;
-	osg::Vec3f _rotation;
 
 	bool _firstPerson;
 
+	Movement _movement;
+
+	CharacterController _controller;
+
 	//OSG Render Data
-	osg::Group* _parentNode;
-	osg::PositionAttitudeTransform* _baseNode;
 	osg::Switch* _bodySwitch;
 	osg::PositionAttitudeTransform* _headNode;
+
+	//Bullet Data
+	btCapsuleShape* _physShape;
 };
 
