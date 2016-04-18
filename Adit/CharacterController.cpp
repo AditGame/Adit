@@ -89,10 +89,15 @@ void CharacterController::updateState()
 			float x = _player->getMovement().forwardBack;
 			float y = _player->getMovement().leftRight;
 			float z = _player->getMovement().jump;
-			if (x != 0 || y != 0 || z != 0)
+			if (x != 0.0 || y != 0.0 || z != 0.0)
 			{
+				if (x < 0.2 && x > -0.2)
+					x = 0.0;
 
-				float mag = 5;
+				if (y < 0.2 && y > -0.2)
+					y = 0.0;
+
+				float mag = 2;
 				float angle = atan2(y, x);
 
 				angle += _player->getRotation().x();
@@ -100,15 +105,16 @@ void CharacterController::updateState()
 				angle *= -1;
 
 				btScalar initZ = _player->getRigidBody()->getLinearVelocity().x();
-				if (z == 0)
+				if (z == 0.0)
 					z = initZ;
 				else
-					z *= 50;
+					z *= 5;
 
 				_player->getRigidBody()->setLinearVelocity(btVector3(cos(angle)*mag, sin(angle)*mag, z));
-
-				std::cout << _player->getRigidBody()->getLinearVelocity().x() << " " << _player->getRigidBody()->getLinearVelocity().y() << " " << _player->getRigidBody()->getLinearVelocity().z() << std::endl;
-
+			}
+			else
+			{
+				_player->getRigidBody()->setLinearVelocity(btVector3(0,0,0));
 			}
 		}
 		break;
