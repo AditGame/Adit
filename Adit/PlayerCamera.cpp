@@ -26,14 +26,14 @@ void PlayerCamera::update()
 
 	if (_firstPerson)
 	{
-		eye = GameEngine::inst().getPlayer()->getEyeNode()->getPosition();
+		eye = osg::computeLocalToWorld(GameEngine::inst().getPlayer()->getEyeNode()->getParentalNodePaths().at(0)).getTrans();
 		osg::Vec3d rot = GameEngine::inst().getPlayer()->getRotation();
 
 		lookAt = osg::Vec3d(eye.x() + cos(rot.x())*_distance, eye.y() + sin(rot.x())*_distance, eye.z() + sin(-rot.y())*_distance);
 	}
 	else
 	{
-		lookAt = GameEngine::inst().getPlayer()->getPosition();
+		lookAt = osg::computeLocalToWorld(GameEngine::inst().getPlayer()->getEyeNode()->getParentalNodePaths().at(0)).getTrans();
 		osg::Vec3d rot = GameEngine::inst().getPlayer()->getRotation();
 
 		float yaw = -rot.x() - osg::PI_2;
