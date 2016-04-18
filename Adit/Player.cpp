@@ -32,7 +32,7 @@ Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135))
 	_baseNode->addChild(footDrawable);
 	_headNode->addChild(headDrawable);
 
-	_physShape = new btCapsuleShape(0.4f, 1);
+	_physShape = new btCylinderShape(btVector3(0.4f, 1, 0.4f));
 	btScalar mass = 80;
 	btVector3 inertia = btVector3(0, 0, 0);
 	_physShape->calculateLocalInertia(mass, inertia);
