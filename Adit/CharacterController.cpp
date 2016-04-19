@@ -100,7 +100,7 @@ void CharacterController::updateState()
 		{
 			float mag = _player->getStats().getRunningSpeed();
 
-			btScalar initZ = _player->getRigidBody()->getLinearVelocity().x();
+			btScalar initZ = _player->getRigidBody()->getLinearVelocity().z();
 			if (z == 0.0)
 				z = initZ;
 			else
@@ -119,22 +119,11 @@ void CharacterController::updateState()
 		//in air
 		if (x != 0.0 || y != 0.0 || z != 0.0)
 		{
-			btVector3 velocity = _player->getRigidBody()->getLinearVelocity();
-
 			float mag = _player->getStats().getRunningSpeed();
-			float angle = atan2(y, x);
 
-			float x = velocity.x();
-			float y = velocity.y();
-			float z = velocity.z();
+			z = _player->getRigidBody()->getLinearVelocity().z();
 
-			if (std::abs(velocity.x() + cos(angle)*mag) < mag)
-				x = velocity.x() + cos(angle)*mag;
-
-			if (std::abs(velocity.y() + sin(angle)*mag) < mag)
-				y = velocity.y() + sin(angle)*mag;
-
-			_player->getRigidBody()->setLinearVelocity(btVector3(x, y, z));
+			_player->getRigidBody()->setLinearVelocity(btVector3(cos(angle)*mag, sin(angle)*mag, z));
 
 		}
 	}
