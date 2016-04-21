@@ -35,7 +35,7 @@ public:
 
 	static osg::Geode* meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh, osg::Geometry* geo = new osg::Geometry());
 
-	static const int BLOCK_WIDTH;
+	static const float BLOCK_WIDTH;
 
 	static bool OSGRenderer::loadShaderSource(osg::Shader* obj, const std::string& fileName);
 

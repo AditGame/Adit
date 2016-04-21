@@ -4,7 +4,9 @@
 
 #include "Entity.h"
 
-SyncedMotionState::SyncedMotionState(const btTransform &initialPosition, Entity* ent, bool syncRotation) : _syncRotation(syncRotation)
+SyncedMotionState::SyncedMotionState(const btTransform &initialPosition, Entity* ent, osg::Vec3d centerOfMass, bool syncRotation) : 
+	_syncRotation(syncRotation),
+	_com(centerOfMass)
 {
 	_entity = ent;
 	_initialPosition = initialPosition;
@@ -27,6 +29,7 @@ void SyncedMotionState::setWorldTransform(const btTransform & worldTrans)
 	}
 	
 	osg::Vec3f pos = osgbCollision::asOsgVec3(worldTrans.getOrigin());
+	pos -= _com;
 	_entity->setPosition(pos, false);
 
 }

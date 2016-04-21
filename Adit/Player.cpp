@@ -19,7 +19,7 @@
 Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135)), _headNode(new osg::PositionAttitudeTransform), _bodySwitch(new osg::Switch), _firstPerson(true), _controller(this)
 {
 
-	_headNode->setPosition(osg::Vec3d(0, ((float)OSGRenderer::BLOCK_WIDTH)*1.0f, 0));
+	_headNode->setPosition(osg::Vec3d(0, 1.0f, 0));
 	_baseNode->addChild(_bodySwitch);
 	_bodySwitch->addChild(_headNode);
 
@@ -32,7 +32,7 @@ Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135))
 	_baseNode->addChild(footDrawable);
 	_headNode->addChild(headDrawable);
 
-	_physShape = new btCylinderShape(btVector3(0.4f, 1, 0.4f));
+	_physShape = new btCylinderShape(btVector3(0.4f, 1.5f * 0.5f, 0.4f));
 	btScalar mass = 80;
 	btVector3 inertia = btVector3(0, 0, 0);
 	_physShape->calculateLocalInertia(mass, inertia);
@@ -43,7 +43,7 @@ Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135))
 	osg::Matrix matrix;
 	matrix.setRotate(quat);
 	matrix.setTrans(osg::Vec3d(getPosition().x(), getPosition().y(), getPosition().z()));
-	_motionState = new SyncedMotionState(osgbCollision::asBtTransform(matrix), this, false);
+	_motionState = new SyncedMotionState(osgbCollision::asBtTransform(matrix), this, osg::Vec3d(0,0,.75), false);
 
 	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(mass, _motionState, _physShape, inertia);
 	groundRigidBodyCI.m_friction = 0;

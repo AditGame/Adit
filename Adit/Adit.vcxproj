@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlockEnums.cpp" />
     <ClCompile Include="BlockGrid.cpp" />
     <ClCompile Include="CharacterController.cpp" />
     <ClCompile Include="CharacterStats.cpp" />

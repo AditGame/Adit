@@ -10,7 +10,7 @@ class SyncedMotionState : public btMotionState
 {
 
 public:
-	SyncedMotionState(const btTransform &initialPosition, Entity* ent, bool syncRotation);
+	SyncedMotionState(const btTransform &initialPosition, Entity* ent, osg::Vec3d centerOfMass = osg::Vec3d(0,0,0), bool syncRotation = false);
 
 	virtual ~SyncedMotionState();
 
@@ -29,6 +29,7 @@ public:
 protected:
 	Entity* _entity;
 	btTransform _initialPosition;
+	osg::Vec3d _com;
 
 	bool _syncRotation;
 
