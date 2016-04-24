@@ -59,20 +59,22 @@ void OSGRenderer::render(BlockGrid& grid)
 
 bool withinFloatbounds(float val, int com) { return val > (float)com - 0.5f && val < (float)com + 0.5f; }
 
-osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh, osg::Geometry* geom)
+osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh)
 {
 	using namespace PolyVox;
 	using namespace std;
 	using namespace osg;
 
-	osg::Geode* geode = new osg::Geode();
-
-	geom->setUseVertexBufferObjects(true);
-
 	const PolyVox::DefaultIndexType* vecIndices = mesh.getRawIndexData();
 	const PolyVox::CubicVertex<CompositeBlock::blockDataType>* vecVertices = mesh.getRawVertexData();
 
-	if (mesh.getNoOfIndices() == 0 || mesh.getNoOfVertices() == 0) return geode;
+	if (mesh.getNoOfIndices() == 0 || mesh.getNoOfVertices() == 0) 
+		return nullptr;
+
+	osg::Geode* geode = new osg::Geode();
+	osg::Geometry* geom = new osg::Geometry();
+
+	geom->setUseVertexBufferObjects(true);
 
 	osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(GL_TRIANGLES, mesh.getNoOfIndices());
 

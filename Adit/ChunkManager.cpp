@@ -13,7 +13,7 @@
 
 ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _center(-100,-100,-100)
 {
-	_visibility = 2;
+	_visibility = 4;
 }
 
 

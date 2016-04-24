@@ -62,7 +62,9 @@ osgViewer::Viewer* GameEngine::setUpView()
 	viewer->addEventHandler(new osgGA::StateSetManipulator(viewer->getCamera()->getOrCreateStateSet()));
 
 	// add the thread model handler
-	viewer->addEventHandler(new osgViewer::ThreadingHandler);
+	//viewer->addEventHandler(new osgViewer::ThreadingHandler);
+
+	viewer->setThreadingModel(osgViewer::ViewerBase::ThreadingModel::CullThreadPerCameraDrawThreadPerContext);
 
 	// add the window size toggle handler
 	viewer->addEventHandler(new osgViewer::WindowSizeHandler);

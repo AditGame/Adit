@@ -33,7 +33,7 @@ public:
 
 	static osg::Geometry* cubeGeometry;
 
-	static osg::Geode* meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh, osg::Geometry* geo = new osg::Geometry());
+	static osg::Geode* meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType> > &mesh);
 
 	static const float BLOCK_WIDTH;
 

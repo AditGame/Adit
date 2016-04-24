@@ -34,7 +34,11 @@ void Entity::setPosition(const osg::Vec3d& newPos, bool movePhysics)
 		//osg::Vec3d position(newPos.x()*(float)OSGRenderer::BLOCK_WIDTH, newPos.y()*(float)OSGRenderer::BLOCK_WIDTH, newPos.z()*(float)OSGRenderer::BLOCK_WIDTH);
 		_baseNode->setPosition(newPos);
 
-		GameEngine::inst().getGrid()->chunkManager->setCenterChunk(ChunkManager::blockToChunkCoords(Coords(newPos.x(), newPos.y())));
+		Coords blockLocation = Coords(newPos.x() / OSGRenderer::BLOCK_WIDTH, newPos.y() / OSGRenderer::BLOCK_WIDTH);
+
+		Coords newChunk = ChunkManager::blockToChunkCoords(blockLocation);
+
+		GameEngine::inst().getGrid()->chunkManager->setCenterChunk(newChunk);
 	}
 }
 

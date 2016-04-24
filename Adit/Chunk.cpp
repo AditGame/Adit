@@ -85,28 +85,48 @@ void Chunk::rebuild(BlockGrid* grid)
 		_chunkLocation.x()*chunkWidth,				_chunkLocation.y()*chunkWidth,				_chunkLocation.z()*chunkHeight,
 		_chunkLocation.x()*chunkWidth + chunkWidth, _chunkLocation.y()*chunkWidth + chunkWidth, z);
 
-	if (isEmpty(grid))
-	{
-		if (_cubeMeshNode != nullptr)
-			_baseNode->removeChild(_cubeMeshNode);
-		_cubeMeshNode = nullptr;
-		return;
-	}
-
 	using namespace PolyVox;
 	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
 
 	PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType>> mesh = extractCubicMesh(grid->getBlockMap(), reg);
 
-	if (_cubeMeshNode != nullptr) 
-		_baseNode->removeChild(_cubeMeshNode);
-	osg::Geometry* geom = new osg::Geometry();
-	_cubeMeshNode = OSGRenderer::meshToGeode(mesh, geom);
-	_baseNode->addChild(_cubeMeshNode);
+	// cleanup meshes and whatnot
 
-	//Delete the old collision shape if it exists
+	//clean up old cube mesh
+	if (_cubeMeshNode != nullptr)
+	{
+		_baseNode->removeChild(_cubeMeshNode);
+		_cubeMeshNode = nullptr;
+	}
+
+	//clean up old physics mesh
 	if (_physShape != nullptr)
+	{
 		delete _physShape;
+		_physShape = nullptr;
+	}
+
+	if (_rigidBody != nullptr)
+	{
+		GameEngine::inst().getPhysics()->getWorld()->removeRigidBody(_rigidBody);
+	}
+
+	//exit early if the chunk is empty
+	if (isEmpty(grid))
+	{
+		return;
+	}
+
+	_cubeMeshNode = OSGRenderer::meshToGeode(mesh);
+
+	//exit if there's no mesh
+	if (_cubeMeshNode == nullptr)
+	{
+		return;
+	}
+
+	//add the mesh to the world
+	_baseNode->addChild(_cubeMeshNode);
 
 	//generate a collision shape from the simplified mesh
 	_physShape = osgbCollision::btTriMeshCollisionShapeFromOSG(_baseNode);
@@ -124,7 +144,6 @@ void Chunk::rebuild(BlockGrid* grid)
 	}
 	else
 	{
-		GameEngine::inst().getPhysics()->getWorld()->removeRigidBody(_rigidBody);
 		_rigidBody->setCollisionShape(_physShape);
 	}
 

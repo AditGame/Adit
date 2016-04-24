@@ -19,7 +19,7 @@ LandGenerator::~LandGenerator()
 
 void LandGenerator::fillVolume(PolyVox::PagedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg)
 {
-	const float sizeMod = 80.0f;
+	const float sizeMod = 200.0f;
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 
