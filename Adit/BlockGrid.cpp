@@ -35,6 +35,51 @@ void BlockGrid::setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockD
 	_blockmap->setVoxel(location, block);
 	Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY(), location.getZ()));
 	chunkManager->setDirty(chunk);
+
+	//also update surrounding chunks if the block borders them
+
+	// TODO: Better logic to check if the chunk actually needs rebuilding
+	//X-
+	if (location.getX() % Chunk::chunkWidth == 0)
+	{
+		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX()-1, location.getY(), location.getZ()));
+		chunkManager->setDirty(chunk);
+	}
+
+	//X+
+	else if (location.getX() % Chunk::chunkWidth == Chunk::chunkWidth-1)
+	{
+		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX() + 1, location.getY(), location.getZ()));
+		chunkManager->setDirty(chunk);
+	}
+
+	//Y-
+	if (location.getY() % Chunk::chunkWidth == 0)
+	{
+		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY() - 1, location.getZ()));
+		chunkManager->setDirty(chunk);
+	}
+
+	//Y+
+	else if (location.getY() % Chunk::chunkWidth == Chunk::chunkWidth - 1)
+	{
+		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY() + 1, location.getZ()));
+		chunkManager->setDirty(chunk);
+	}
+
+	//Z-
+	if (location.getZ() % Chunk::chunkHeight == 0)
+	{
+		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY(), location.getZ() - 1));
+		chunkManager->setDirty(chunk);
+	}
+
+	//Z+
+	else if (location.getZ() % Chunk::chunkHeight == Chunk::chunkHeight - 1)
+	{
+		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY(), location.getZ() + 1));
+		chunkManager->setDirty(chunk);
+	}
 }
 
 void BlockGrid::update()

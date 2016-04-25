@@ -41,7 +41,6 @@ void BlockDestructionController::highlightBlock(Player * player)
 
 	osg::Vec3d pos(res.hitVoxel.getX() * OSGRenderer::BLOCK_WIDTH, res.hitVoxel.getY() * OSGRenderer::BLOCK_WIDTH, res.hitVoxel.getZ() * OSGRenderer::BLOCK_WIDTH);
 
-	std::cout << player->getEyePosition().x() << ":" << player->getEyePosition().y() << ":" << player->getEyePosition().z() << "\t" << pos.x() << ":" << pos.y() << ":" << pos.z() << std::endl;
 
 	_baseNode->setPosition(pos);
 
@@ -81,7 +80,6 @@ PolyVox::PickResult BlockDestructionController::preformVoxelRaycast(Player * pla
 
 	PickResult res = pickVoxel<BlockGrid::blockMap_type>(GameEngine::inst().getGrid()->getBlockMap(), startVec, direction, BlockType::BlockType_Default);
 
-	std::cout << startVec << " : " << direction << " : " << res.hitVoxel << std::endl;
 
 	return res;
 }
