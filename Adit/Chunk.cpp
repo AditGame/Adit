@@ -19,7 +19,7 @@
 #include "PhysicsEngine.h"
 
 const int Chunk::chunkHeight = 16;
-const int Chunk::chunkWidth = 32;
+const int Chunk::chunkWidth = 16;
 
 Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) : 
 	_parentNode(gridNode), 
@@ -148,5 +148,5 @@ void Chunk::rebuild(BlockGrid* grid)
 	}
 
 	//add the rigid body to the world
-	GameEngine::inst().getPhysics()->getWorld()->addRigidBody(_rigidBody);
+  	GameEngine::inst().getPhysics()->getWorld()->addRigidBody(_rigidBody);
 }

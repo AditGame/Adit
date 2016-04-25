@@ -23,8 +23,8 @@ void CharacterController::update()
 
 		//fire a ray down to see if we're on the ground
 		osg::Vec3d pos = _player->getPosition();
-		btVector3 btFrom(pos.x(), pos.y(), pos.z());
-		btVector3 btTo(pos.x(), pos.y(), pos.z() - 5);
+		btVector3 btFrom(pos.x(), pos.y(), pos.z() + 1.0f);
+		btVector3 btTo(pos.x(), pos.y(), pos.z() - 5.0f);
 		btCollisionWorld::ClosestConvexResultCallback res(btFrom, btTo);
 		res.m_collisionFilterMask = btBroadphaseProxy::StaticFilter;
 

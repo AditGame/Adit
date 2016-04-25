@@ -56,7 +56,7 @@ private:
 	osg::PositionAttitudeTransform* _headNode;
 
 	//Bullet Data
-	btCylinderShape* _physShape;
+	btCapsuleShape* _physShape;
 
 
 };

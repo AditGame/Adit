@@ -55,7 +55,7 @@ void BlockDestructionController::destroyBlock(Player * player)
 
 	if (!result.didHit) return;
 
-	GameEngine::inst().getGrid()->setBlock(result.hitVoxel, BlockType::BlockType_Default);
+	GameEngine::inst().getGrid()->setBlock(result.hitVoxel, BlockType::BlockType_Default, true);
 }
 
 PolyVox::PickResult BlockDestructionController::preformVoxelRaycast(Player * player)

@@ -13,7 +13,7 @@
 
 ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _center(-100,-100,-100)
 {
-	_visibility = 1;
+	_visibility = 4;
 }
 
 
@@ -73,7 +73,11 @@ void ChunkManager::rebuildChunks()
 
 Coords ChunkManager::blockToChunkCoords(Coords in)
 {
-	return Coords(in.x()/Chunk::chunkWidth, in.y()/Chunk::chunkWidth, in.z()/Chunk::chunkHeight);
+	int newX = std::floor((float)in.x() / (float)Chunk::chunkWidth);
+	int newY = std::floor((float)in.y() / (float)Chunk::chunkWidth);
+	int newZ = std::floor((float)in.z() / (float)Chunk::chunkHeight);
+	Coords result = Coords(newX, newY, newZ);
+	return result;
 }
 
 void ChunkManager::setCenterChunk(Coords center, bool force)

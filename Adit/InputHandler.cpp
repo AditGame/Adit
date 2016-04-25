@@ -136,6 +136,7 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 		}
 		break;
 	}
+	case(osgGA::GUIEventAdapter::DRAG): //fix for moving mouse while holding down a mouse button
 	case(osgGA::GUIEventAdapter::MOVE) :
 	{
 		if (_player != nullptr)

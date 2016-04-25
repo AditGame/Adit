@@ -18,7 +18,7 @@ public:
 	ChunkManager* chunkManager;
 	CompositeBlock::blockDataType getBlock(Coords location);
 
-	void setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockDataType block);
+	void setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockDataType block, bool front);
 
 	void update();
 

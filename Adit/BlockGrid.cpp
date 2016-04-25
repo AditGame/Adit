@@ -30,11 +30,11 @@ CompositeBlock::blockDataType BlockGrid::getBlock(Coords location)
 	return _blockmap->getVoxel(location);
 }
 
-void BlockGrid::setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockDataType block)
+void BlockGrid::setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockDataType block, bool front)
 {
 	_blockmap->setVoxel(location, block);
 	Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY(), location.getZ()));
-	chunkManager->setDirty(chunk);
+	chunkManager->setDirty(chunk, front);
 
 	//also update surrounding chunks if the block borders them
 
@@ -43,42 +43,42 @@ void BlockGrid::setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockD
 	if (location.getX() % Chunk::chunkWidth == 0)
 	{
 		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX()-1, location.getY(), location.getZ()));
-		chunkManager->setDirty(chunk);
+		chunkManager->setDirty(chunk, front);
 	}
 
 	//X+
 	else if (location.getX() % Chunk::chunkWidth == Chunk::chunkWidth-1)
 	{
 		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX() + 1, location.getY(), location.getZ()));
-		chunkManager->setDirty(chunk);
+		chunkManager->setDirty(chunk, front);
 	}
 
 	//Y-
 	if (location.getY() % Chunk::chunkWidth == 0)
 	{
 		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY() - 1, location.getZ()));
-		chunkManager->setDirty(chunk);
+		chunkManager->setDirty(chunk, front);
 	}
 
 	//Y+
 	else if (location.getY() % Chunk::chunkWidth == Chunk::chunkWidth - 1)
 	{
 		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY() + 1, location.getZ()));
-		chunkManager->setDirty(chunk);
+		chunkManager->setDirty(chunk,front);
 	}
 
 	//Z-
 	if (location.getZ() % Chunk::chunkHeight == 0)
 	{
 		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY(), location.getZ() - 1));
-		chunkManager->setDirty(chunk);
+		chunkManager->setDirty(chunk, front);
 	}
 
 	//Z+
 	else if (location.getZ() % Chunk::chunkHeight == Chunk::chunkHeight - 1)
 	{
 		Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY(), location.getZ() + 1));
-		chunkManager->setDirty(chunk);
+		chunkManager->setDirty(chunk, front);
 	}
 }
 
