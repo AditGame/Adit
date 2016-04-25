@@ -7,6 +7,7 @@
 #include "GameEngine.h"
 #include "PhysicsEngine.h"
 #include "PlayerCamera.h"
+#include "BlockDestructionController.h"
 
 #include "Options.h"
 
@@ -155,6 +156,21 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 				_oldMouseY = mouseY;
 			}
 
+		}
+		break;
+	}
+	case(osgGA::GUIEventAdapter::PUSH) :
+	{
+		if (_player != nullptr)
+		{
+			switch (ea.getButton())
+			{
+			case (osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) :
+			{
+				_player->destroyBlock();
+				break;
+			}
+			}
 		}
 		break;
 	}

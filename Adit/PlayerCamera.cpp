@@ -29,7 +29,7 @@ void PlayerCamera::update()
 
 	if (_firstPerson)
 	{
-		eye = osg::computeLocalToWorld(GameEngine::inst().getPlayer()->getEyeNode()->getParentalNodePaths().at(0)).getTrans();
+		eye = GameEngine::inst().getPlayer()->getEyePosition();
 		osg::Vec3d rot = GameEngine::inst().getPlayer()->getRotation();
 
 		float yaw = -rot.x() - osg::PI_2;

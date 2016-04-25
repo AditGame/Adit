@@ -13,7 +13,7 @@
 
 ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _center(-100,-100,-100)
 {
-	_visibility = 4;
+	_visibility = 1;
 }
 
 
@@ -25,6 +25,22 @@ void ChunkManager::setVisibility(int vis)
 {
 	_visibility = vis;
 	setCenterChunk(_center, true);
+}
+
+void ChunkManager::setDirty(Coords coords, bool front)
+{
+	chunkMap_type::iterator it = _chunkMap.find(coords);
+
+	//exit if chunk isn't loaded (it's rebuilt anyways when loaded)
+	if (it == _chunkMap.end())
+		return;
+
+	Chunk* chunk = it->second;
+
+	if (front)
+		_dirtyChunks.push_front(chunk);
+	else
+		_dirtyChunks.push_back(chunk);
 }
 
 void ChunkManager::updateChunks()

@@ -1,5 +1,6 @@
 #include "VolumePager.h"
 
+#include <direct.h>
 
 VolumePager::~VolumePager()
 {
@@ -24,10 +25,13 @@ void VolumePager::pageIn(const PolyVox::Region & region, PolyVox::PagedVolume<Co
 	fopen_s(&pFile, filename.c_str(), "rb");
 	if (pFile)
 	{
-		fread(pChunk->getData(), sizeof(CompositeBlock::blockDataType), pChunk->getDataSizeInBytes(), pFile);
-
-		if (ferror(pFile))
+		size_t sizeRead = fread_s(pChunk->getData(), pChunk->getDataSizeInBytes(), sizeof(CompositeBlock::blockDataType), pChunk->getDataSizeInBytes()/ sizeof(CompositeBlock::blockDataType), pFile);
+		std::cout << pChunk->getDataSizeInBytes() << std::endl;
+		int err = ferror(pFile);
+		if (err)
 		{
+			perror("fread Error");
+			
 			POLYVOX_THROW(std::runtime_error, "Error reading in chunk data, even though a file exists.");
 		}
 
@@ -46,6 +50,8 @@ void VolumePager::pageOut(const PolyVox::Region & region, PolyVox::PagedVolume<C
 
 	POLYVOX_LOG_TRACE("Paging out data for ", region);
 
+	_mkdir(_saveFolderName.c_str());
+
 	std::stringstream ssFilename;
 	ssFilename << _saveFolderName << "/"
 		<< region.getLowerX() << "_" << region.getLowerY() << "_" << region.getLowerZ() << "_"
@@ -63,7 +69,7 @@ void VolumePager::pageOut(const PolyVox::Region & region, PolyVox::PagedVolume<C
 		POLYVOX_THROW(std::runtime_error, "Unable to open file to write out chunk data.");
 	}
 
-	fwrite(pChunk->getData(), sizeof(uint8_t), pChunk->getDataSizeInBytes(), pFile);
+	fwrite(pChunk->getData(), sizeof(CompositeBlock::blockDataType), pChunk->getDataSizeInBytes()/ sizeof(CompositeBlock::blockDataType), pFile);
 
 	if (ferror(pFile))
 	{

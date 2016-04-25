@@ -17,7 +17,7 @@ PhysicsEngine::PhysicsEngine()
 	_dynamicsWorld = new btDiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
 
 	//Set the gravity (-9.8, to simplify)
-	_dynamicsWorld->setGravity(btVector3(0, 0, -9.8f * BlockConsts::WORLD_SCALE));
+	_dynamicsWorld->setGravity(btVector3(0, 0, -9.8f));
 }
 
 

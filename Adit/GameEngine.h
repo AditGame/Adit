@@ -34,6 +34,8 @@ public:
 
 	void toggleDebugDraw() { _debugDraw = !_debugDraw; }
 
+	osg::ref_ptr<osg::Group> getRoot() { return root; }
+
 private:
 
 	//is singleton

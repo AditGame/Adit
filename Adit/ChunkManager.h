@@ -38,6 +38,10 @@ public:
 	int getVisibility() const { return _visibility; }
 	void setVisibility(int i);
 
+	/// Sets the chunk as dirty, thus it must be rebuilt
+	/** front puts the chunk in the front of the queue. This is useful for when the block was added by the player  **/
+	void setDirty(Coords coords, bool front=false);
+
 	/// Sets the chunk the player is currently in. Will attempt to load the chunks within the player's visibility
 	void setCenterChunk(int x, int y) { return setCenterChunk(Coords(x, y)); }
 	void setCenterChunk(Coords center, bool force=false);

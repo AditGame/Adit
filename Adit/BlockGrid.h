@@ -18,6 +18,8 @@ public:
 	ChunkManager* chunkManager;
 	CompositeBlock::blockDataType getBlock(Coords location);
 
+	void setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockDataType block);
+
 	void update();
 
 	osg::ref_ptr<osg::Group> getBaseNode() { return _baseNode; }

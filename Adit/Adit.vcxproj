@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlockDestructionController.cpp" />
     <ClCompile Include="BlockEnums.cpp" />
     <ClCompile Include="BlockGrid.cpp" />
     <ClCompile Include="CharacterController.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="VolumePager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlockDestructionController.h" />
     <ClInclude Include="BlockEnums.h" />
     <ClInclude Include="BlockGrid.h" />
     <ClInclude Include="CharacterController.h" />

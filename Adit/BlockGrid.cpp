@@ -30,6 +30,13 @@ CompositeBlock::blockDataType BlockGrid::getBlock(Coords location)
 	return _blockmap->getVoxel(location);
 }
 
+void BlockGrid::setBlock(PolyVox::Vector3DInt32 location, CompositeBlock::blockDataType block)
+{
+	_blockmap->setVoxel(location, block);
+	Coords chunk = chunkManager->blockToChunkCoords(Coords(location.getX(), location.getY(), location.getZ()));
+	chunkManager->setDirty(chunk);
+}
+
 void BlockGrid::update()
 {
 	chunkManager->updateChunks();

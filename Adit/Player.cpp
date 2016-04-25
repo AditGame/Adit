@@ -70,7 +70,10 @@ Player::~Player()
 void Player::update(GameEngine * eng, btScalar time)
 {
 	_controller.update();
+	_destructionController.highlightBlock(this);
 }
+
+
 
 void Player::setRotation(osg::Vec3f newRot)
 {
@@ -101,6 +104,11 @@ void Player::setRotation(osg::Vec3f newRot)
 	_headNode->setAttitude(headQuat);
 }
 
+osg::Vec3d Player::getEyePosition()
+{
+	return osg::computeLocalToWorld(getEyeNode()->getParentalNodePaths().at(0)).getTrans();
+}
+
 osg::PositionAttitudeTransform * Player::getEyeNode()
 {
 	return _headNode;
@@ -114,3 +122,9 @@ void Player::setFirstPerson(bool v)
 	else
 		_bodySwitch->setAllChildrenOn();
 }
+
+void Player::destroyBlock()
+{
+	_destructionController.destroyBlock(this);
+}
+

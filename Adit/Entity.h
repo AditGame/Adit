@@ -32,7 +32,7 @@ public:
 	osg::Vec3f getRotation() { return _rotation; }
 
 	//OSG Node Logic
-	void attach(osg::Group* group);
+	virtual void attach(osg::Group* group);
 	osg::PositionAttitudeTransform* getBaseNode() { return _baseNode; }
 
 	//Bullet Rigid body logic

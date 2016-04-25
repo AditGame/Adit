@@ -9,9 +9,13 @@ public:
 	int getRunningSpeed() { return _runningSpeed; }
 	int getSprintSpeed() { return _sprintSpeed; }
 
+	int getManipulateDist() { return _manipulateDistance; }
+
 private:
 	int _walkingSpeed;
 	int _runningSpeed;
 	int _sprintSpeed;
+
+	int _manipulateDistance;
 };
 

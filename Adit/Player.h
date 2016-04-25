@@ -15,6 +15,7 @@
 #include "CharacterController.h"
 #include "Movement.h"
 #include "CharacterStats.h"
+#include "BlockDestructionController.h"
 
 class Player : public Entity
 {
@@ -26,6 +27,8 @@ public:
 
 	void setRotation(osg::Vec3f);
 
+	osg::Vec3d getEyePosition();
+
 	osg::PositionAttitudeTransform* getEyeNode();
 
 	void setFirstPerson(bool v);
@@ -33,6 +36,8 @@ public:
 	Movement& getMovement() { return _movement; }
 
 	CharacterStats& getStats() { return _stats; }
+
+	void destroyBlock();
 
 private:
 
@@ -44,11 +49,15 @@ private:
 
 	CharacterStats _stats;
 
+	BlockDestructionController _destructionController;
+
 	//OSG Render Data
 	osg::Switch* _bodySwitch;
 	osg::PositionAttitudeTransform* _headNode;
 
 	//Bullet Data
 	btCylinderShape* _physShape;
+
+
 };
 
