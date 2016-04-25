@@ -19,9 +19,9 @@ BlockDestructionController::BlockDestructionController() : _parentNode(nullptr),
 {
 	attach(GameEngine::inst().getRoot());
 
-	float blockSize = OSGRenderer::BLOCK_WIDTH + 0.02f;
+	float blockSize = OSGRenderer::BLOCK_WIDTH + 0.02f; //make it slightly larger so avoid z-fighting
 
-	osg::Box* box = new osg::Box(osg::Vec3(blockSize/2, blockSize/2, blockSize/2), blockSize); //make it slightly larger so avoid z-fighting
+	osg::Box* box = new osg::Box(osg::Vec3(OSGRenderer::BLOCK_WIDTH /2, OSGRenderer::BLOCK_WIDTH /2, OSGRenderer::BLOCK_WIDTH /2), blockSize);
 	osg::ShapeDrawable* unitCubeDrawable = new osg::ShapeDrawable(box);
 
 	_baseNode->addChild(unitCubeDrawable);
@@ -37,13 +37,16 @@ void BlockDestructionController::highlightBlock(Player * player)
 {
 	PolyVox::PickResult res = preformVoxelRaycast(player);
 
-	if (!res.didHit) return;
-
-	osg::Vec3d pos(res.hitVoxel.getX() * OSGRenderer::BLOCK_WIDTH, res.hitVoxel.getY() * OSGRenderer::BLOCK_WIDTH, res.hitVoxel.getZ() * OSGRenderer::BLOCK_WIDTH);
-
-
-	_baseNode->setPosition(pos);
-
+	if (!res.didHit)
+	{
+		_baseNode->setNodeMask(0x0); //hide the box
+	}
+	else
+	{
+		_baseNode->setNodeMask(0xffffffff); //show the box
+		osg::Vec3d pos(res.hitVoxel.getX() * OSGRenderer::BLOCK_WIDTH, res.hitVoxel.getY() * OSGRenderer::BLOCK_WIDTH, res.hitVoxel.getZ() * OSGRenderer::BLOCK_WIDTH);
+		_baseNode->setPosition(pos);
+	}
 }
 
 void BlockDestructionController::destroyBlock(Player * player)
