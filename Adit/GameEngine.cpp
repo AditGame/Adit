@@ -54,9 +54,12 @@ osgViewer::Viewer* GameEngine::setUpView()
 	osg::GraphicsContext::ScreenIdentifier si;
 	si.readDISPLAY();
 
+	int screenNum = Options::instance().getInt(Options::OPT_SCREEN_NUM);
 
-	viewer->setUpViewOnSingleScreen(osg::GraphicsContext::ScreenIdentifier(0).screenNum);
-	//viewer.setUpViewInWindow(20, 20, 400, 400, 1);
+	if(Options::instance().getBool(Options::OPT_FULLSCREEN))
+		viewer->setUpViewOnSingleScreen(screenNum);
+	else
+		viewer->setUpViewInWindow(20, 20, Options::instance().getInt(Options::OPT_SCREEN_WIDTH), Options::instance().getInt(Options::OPT_SCREEN_WIDTH), screenNum);
 
 	// add the state manipulator
 	viewer->addEventHandler(new osgGA::StateSetManipulator(viewer->getCamera()->getOrCreateStateSet()));

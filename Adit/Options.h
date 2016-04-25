@@ -56,6 +56,8 @@ public:
 
 	int getInt(std::string name) {return atoi(get(name).c_str());}
 
+	int getBool(std::string name) { return get(name)=="true"; }
+
 	//! Present Options
 	int getScreenWidth() {return getInt("screen_width");}
 	int getScreenHeight() {return getInt("screen_height");}
@@ -67,6 +69,10 @@ public:
 	static const std::string OPT_LEFT;
 	static const std::string OPT_RIGHT;
 	static const std::string OPT_JUMP;
+	static const std::string OPT_FULLSCREEN;
+	static const std::string OPT_SCREEN_WIDTH;
+	static const std::string OPT_SCREEN_HEIGHT;
+	static const std::string OPT_SCREEN_NUM;
 
 private:
 	std::string fileName;
