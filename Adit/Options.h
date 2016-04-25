@@ -69,10 +69,12 @@ public:
 	static const std::string OPT_LEFT;
 	static const std::string OPT_RIGHT;
 	static const std::string OPT_JUMP;
+	static const std::string OPT_FULLSCREEN_KEY;
 	static const std::string OPT_FULLSCREEN;
 	static const std::string OPT_SCREEN_WIDTH;
 	static const std::string OPT_SCREEN_HEIGHT;
 	static const std::string OPT_SCREEN_NUM;
+	static const std::string OPT_FOV;
 
 private:
 	std::string fileName;

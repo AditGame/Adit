@@ -9,10 +9,12 @@ const std::string Options::OPT_BACKWARD = "backward";
 const std::string Options::OPT_LEFT = "left";
 const std::string Options::OPT_RIGHT = "right";
 const std::string Options::OPT_JUMP = "jump";
+const std::string Options::OPT_FULLSCREEN_KEY = "fullscreen_key";
 const std::string Options::OPT_FULLSCREEN = "fullscreen";
 const std::string Options::OPT_SCREEN_WIDTH = "screen_width";
 const std::string Options::OPT_SCREEN_HEIGHT = "screen_height";
 const std::string Options::OPT_SCREEN_NUM = "screen_num";
+const std::string Options::OPT_FOV = "field_of_view";
 
 Options::Options(string name) {
 	load(name);
@@ -68,10 +70,12 @@ void Options::fillDefault() {
     defaultSettings[OPT_BACKWARD]=to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_S);
     defaultSettings[OPT_RIGHT]=to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_D);
     defaultSettings[OPT_JUMP]=to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_Space);
+	defaultSettings[OPT_FULLSCREEN_KEY] = to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_F11);
     defaultSettings[OPT_FULLSCREEN]="true";
     defaultSettings[OPT_SCREEN_WIDTH]="640";
     defaultSettings[OPT_SCREEN_HEIGHT]="480";
 	defaultSettings[OPT_SCREEN_NUM] = "0";
+	defaultSettings[OPT_FOV] = "90";
     defaultSettings["screen_bbp"]="32";
     defaultSettings["verbose"]="false";
     defaultSettings["maxFPS"]="60";

@@ -50,16 +50,20 @@ osgViewer::Viewer* GameEngine::setUpView()
 	//viewer->getCamera()->setCullingActive(true);
 	//viewer->getCamera()->setCullingMode(osg::CullSettings::VIEW_FRUSTUM_SIDES_CULLING);
 
-	osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-	osg::GraphicsContext::ScreenIdentifier si;
-	si.readDISPLAY();
-
+	//set up screen
 	int screenNum = Options::instance().getInt(Options::OPT_SCREEN_NUM);
-
 	if(Options::instance().getBool(Options::OPT_FULLSCREEN))
 		viewer->setUpViewOnSingleScreen(screenNum);
 	else
 		viewer->setUpViewInWindow(20, 20, Options::instance().getInt(Options::OPT_SCREEN_WIDTH), Options::instance().getInt(Options::OPT_SCREEN_WIDTH), screenNum);
+
+	//set up FOV (TODO: There HAS to be a better way!)
+	double fov = 0; double ratio = 0; double near = 0; double far = 0;
+	osg::Matrix proj;
+	proj = viewer->getCamera()->getProjectionMatrix();
+	proj.getPerspective(fov, ratio, near, far);
+
+	viewer->getCamera()->setProjectionMatrix(osg::Matrix::perspective(Options::instance().getInt(Options::OPT_FOV), ratio, near, far));
 
 	// add the state manipulator
 	viewer->addEventHandler(new osgGA::StateSetManipulator(viewer->getCamera()->getOrCreateStateSet()));
@@ -70,7 +74,9 @@ osgViewer::Viewer* GameEngine::setUpView()
 	viewer->setThreadingModel(osgViewer::ViewerBase::ThreadingModel::CullThreadPerCameraDrawThreadPerContext);
 
 	// add the window size toggle handler
-	viewer->addEventHandler(new osgViewer::WindowSizeHandler);
+	osgViewer::WindowSizeHandler* sizeHandler = new osgViewer::WindowSizeHandler();
+	sizeHandler->setKeyEventToggleFullscreen(Options::instance().getInt(Options::OPT_FULLSCREEN_KEY));
+	viewer->addEventHandler(sizeHandler);
 
 	// add the stats handler
 	viewer->addEventHandler(new osgViewer::StatsHandler);
