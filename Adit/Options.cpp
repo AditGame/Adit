@@ -75,7 +75,7 @@ void Options::fillDefault() {
     defaultSettings[OPT_SCREEN_WIDTH]="640";
     defaultSettings[OPT_SCREEN_HEIGHT]="480";
 	defaultSettings[OPT_SCREEN_NUM] = "0";
-	defaultSettings[OPT_FOV] = "90";
+	defaultSettings[OPT_FOV] = "60";
     defaultSettings["screen_bbp"]="32";
     defaultSettings["verbose"]="false";
     defaultSettings["maxFPS"]="60";

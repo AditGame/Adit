@@ -1,6 +1,8 @@
 # Custom
 OpenSceneGraph-Data-master/
 options.txt
+Adit/tutorial.bmp
+Adit/saves/*
 
 # Windows image file caches
 Thumbs.db
@@ -302,4 +304,3 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-Adit/tutorial.bmp
