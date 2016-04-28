@@ -87,7 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSG_INCLUDE_PATH);D:\libs\OSG\include;D:\libs\noise\include;D:\libs\PolyVox\include;D:\Documents\GitHub\bullet3\src;D:\Documents\GitHub\Adit\osgBullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSG_INCLUDE_PATH);D:\libs\OSG\include;D:\libs\noise\include;D:\libs\PolyVox\include;D:\Documents\GitHub\bullet3\src;D:\Documents\GitHub\Adit\osgBullet;D:\Documents\GitHub\WorldGen\src;%(AdditionalIncludeDirectories);D:\Documents\GitHub\Adit\Polyvox-Multithread\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -117,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSG_INCLUDE_PATH);D:\libs\OSG\include;D:\libs\noise\include;D:\libs\PolyVox\PolyVoxCore\include;D:\libs\PolyVox\PolyVoxUtil\include;%(AdditionalIncludeDirectories);D:\libs\Bullet\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSG_INCLUDE_PATH);D:\libs\OSG\include;D:\libs\noise\include;D:\libs\PolyVox\PolyVoxCore\include;D:\libs\PolyVox\PolyVoxUtil\include;%(AdditionalIncludeDirectories);D:\libs\Bullet\include;D:\Documents\GitHub\Adit\Polyvox-Multithread\src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -154,6 +154,7 @@
     <ClCompile Include="VolumePager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Polyvox-Multithread\src\ThreadedVolume.h" />
     <ClInclude Include="BlockDestructionController.h" />
     <ClInclude Include="BlockEnums.h" />
     <ClInclude Include="BlockGrid.h" />
@@ -194,9 +195,17 @@
     <ProjectReference Include="..\..\bullet3\build\src\LinearMath\LinearMath.vcxproj">
       <Project>{79008505-fedc-3f41-827c-6b81ff8d74aa}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\WorldGen\build\AditWorldGen.vcxproj">
+      <Project>{5878c27c-b3aa-4c7f-a15d-d3c2c2036332}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\osgBullet\osgBullet.vcxproj">
       <Project>{2aea85a2-7218-405a-ae6a-2fd1acf9be5c}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Polyvox-Multithread\src\ThreadedVolumeiml.h" />
+    <None Include="..\Polyvox-Multithread\src\ThreadedVolumeChunk.h" />
+    <None Include="..\Polyvox-Multithread\src\ThreadedVolumeSampler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

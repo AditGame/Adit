@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\polyvox-multithreaded">
+      <UniqueIdentifier>{a59e1185-c7b9-413f-ba26-ce40b4fd8b49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockGrid.cpp">
@@ -73,6 +76,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MWCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SyncedMotionState.cpp">
@@ -164,6 +170,9 @@
     <ClInclude Include="VoxTreeCoord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MWCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="SyncedMotionState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -179,5 +188,19 @@
     <ClInclude Include="BlockDestructionController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Polyvox-Multithread\src\ThreadedVolume.h">
+      <Filter>Header Files\polyvox-multithreaded</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Polyvox-Multithread\src\ThreadedVolumeiml.h">
+      <Filter>Header Files\polyvox-multithreaded</Filter>
+    </None>
+    <None Include="..\Polyvox-Multithread\src\ThreadedVolumeChunk.h">
+      <Filter>Header Files\polyvox-multithreaded</Filter>
+    </None>
+    <None Include="..\Polyvox-Multithread\src\ThreadedVolumeSampler.h">
+      <Filter>Header Files\polyvox-multithreaded</Filter>
+    </None>
   </ItemGroup>
 </Project>

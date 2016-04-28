@@ -45,12 +45,11 @@ void ChunkManager::setDirty(Coords coords, bool front)
 
 void ChunkManager::updateChunks()
 {
-
-	//rebuild one dirty chunk at a time
-	if (_dirtyChunks.size() > 0)
+	Chunk* chunk = chunkLoader.getLoadedChunk();
+	if (chunk != nullptr && chunk->getlocation().dist_squared_2D(_center) < _visibility * _visibility)
 	{
-		_dirtyChunks.back()->rebuild(_gridContainer);
-		_dirtyChunks.pop_back();
+		_chunkMap.emplace(chunk->getlocation(), chunk);
+		chunk->attachToGrid(_gridContainer->getBaseNode());
 	}
 }
 
@@ -67,7 +66,6 @@ void ChunkManager::rebuildChunks()
 	}
 	_chunkMap.clear();
 
-	_dirtyChunks.clear();
 	setCenterChunk(_center, true);
 }
 
@@ -89,11 +87,6 @@ void ChunkManager::setCenterChunk(Coords center, bool force)
 	{
 		if (it->first.dist_squared_2D(center) > _visibility * _visibility)
 		{
-			dirtyChunks_type::iterator find = std::find(_dirtyChunks.begin(), _dirtyChunks.end(), it->second);
-			if (find != _dirtyChunks.end())
-			{
-				_dirtyChunks.erase(find);
-			}
 			delete it->second;
 			it = _chunkMap.erase(it); //returns next element
 		}
@@ -118,9 +111,8 @@ void ChunkManager::setCenterChunk(Coords center, bool force)
 					chunkMap_type::iterator it = _chunkMap.find(coords);
 					if (it == _chunkMap.end())
 					{
-						Chunk* chunk = new Chunk(coords, _gridContainer->getBaseNode());
-						_chunkMap.emplace(coords, chunk);
-						_dirtyChunks.push_front(chunk);
+						chunkLoader.requestLoadChunk(coords);
+						//_dirtyChunks.push_front(chunk);
 					}
 				}
 			}
@@ -137,10 +129,13 @@ void ChunkManager::moveCenterChunk(Coords movement)
 
 void ChunkManager::processAllDirty()
 {
-	//rebuild one dirty chunk at a time
-	while (_dirtyChunks.size() > 0)
+	chunkLoader.waitUntilEmpty();
+	
+	Chunk* chunk = chunkLoader.getLoadedChunk();
+	while (chunk != nullptr && chunk->getlocation().dist_squared_2D(_center) < _visibility * _visibility)
 	{
-		_dirtyChunks.back()->rebuild(_gridContainer);
-		_dirtyChunks.pop_back();
+		_chunkMap.emplace(chunk->getlocation(), chunk);
+		chunk->attachToGrid(_gridContainer->getBaseNode());
+		chunk = chunkLoader.getLoadedChunk();
 	}
 }

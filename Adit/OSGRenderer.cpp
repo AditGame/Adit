@@ -48,7 +48,7 @@ void OSGRenderer::setUp()
 	loadShaderSource(brickFragmentObject, "shaders/brick.frag");
 }
 
-const float OSGRenderer::BLOCK_WIDTH = 0.5f;
+const float OSGRenderer::BLOCK_WIDTH = 3.0f;
 
 void OSGRenderer::render(BlockGrid& grid)
 {
@@ -102,6 +102,8 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<Composit
 			(*colors)[i].set(0.22f, 0.36f, 0.20f, 0.0f);
 		else if (withinFloatbounds(vert0.data, BlockType::BlockType_Dirt))
 			(*colors)[i].set(0.53f, 0.26f, 0.12f, 0.0f);
+		else if (withinFloatbounds(vert0.data, BlockType::BlockType_Water))
+			(*colors)[i].set(0.2f, 0.2f, 0.95f, 0.0f);
 		else
 			(*colors)[i].set(0.0f, 0.0f, 1.0f, 0.0f);
 		//std::cout << vert0.getMaterial() << std::endl;

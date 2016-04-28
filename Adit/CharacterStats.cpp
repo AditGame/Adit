@@ -3,9 +3,9 @@
 
 
 CharacterStats::CharacterStats() :
-	_walkingSpeed(1),
-	_runningSpeed(2),
-	_sprintSpeed(3),
+	_walkingSpeed(5),
+	_runningSpeed(10),
+	_sprintSpeed(15),
 	_manipulateDistance(10)
 {
 }

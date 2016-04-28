@@ -9,6 +9,8 @@ public:
 	int getRunningSpeed() { return _runningSpeed; }
 	int getSprintSpeed() { return _sprintSpeed; }
 
+	int getJumpSpeed() { return _runningSpeed; }
+
 	int getManipulateDist() { return _manipulateDistance; }
 
 private:

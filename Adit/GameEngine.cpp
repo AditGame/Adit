@@ -55,7 +55,7 @@ osgViewer::Viewer* GameEngine::setUpView()
 	if(Options::instance().getBool(Options::OPT_FULLSCREEN))
 		viewer->setUpViewOnSingleScreen(screenNum);
 	else
-		viewer->setUpViewInWindow(20, 20, Options::instance().getInt(Options::OPT_SCREEN_WIDTH), Options::instance().getInt(Options::OPT_SCREEN_WIDTH), screenNum);
+		viewer->setUpViewInWindow(20, 20, Options::instance().getInt(Options::OPT_SCREEN_WIDTH), Options::instance().getInt(Options::OPT_SCREEN_HEIGHT), screenNum);
 
 	//set up FOV (TODO: There HAS to be a better way!)
 	double fov = 0; double ratio = 0; double near = 0; double far = 0;

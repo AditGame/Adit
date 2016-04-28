@@ -17,7 +17,11 @@ public:
 	void requestLoadChunk(Coords location);
 	Chunk* getLoadedChunk();
 
+	void removeChunk(Coords location);
+
 	void stopThread() { stopFlag = true; }
+
+	void waitUntilEmpty();
 
 	void operator()();
 

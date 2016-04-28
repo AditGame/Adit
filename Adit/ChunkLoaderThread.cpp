@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+#include "GameEngine.h"
+
 void ChunkLoaderThread::operator()()
 {
 	loop();
@@ -30,9 +32,23 @@ ChunkLoaderThread::~ChunkLoaderThread()
 
 void ChunkLoaderThread::requestLoadChunk(Coords location)
 {
-	toLoadMutex.lock();
+	std::lock_guard<std::mutex> mutexlock(loadedMutex);
 	toLoad.push(location);
-	toLoadMutex.unlock();
+}
+
+void ChunkLoaderThread::waitUntilEmpty()
+{
+	while (true)
+	{
+		toLoadMutex.lock();
+		if (toLoad.empty())
+		{
+			toLoadMutex.unlock();
+			return;
+		}
+		toLoadMutex.unlock();
+		Sleep(500);
+	}
 }
 
 Chunk * ChunkLoaderThread::getLoadedChunk()
@@ -46,6 +62,10 @@ Chunk * ChunkLoaderThread::getLoadedChunk()
 		loaded.pop();
 		return returnChunk;
 	}
+}
+
+void ChunkLoaderThread::removeChunk(Coords location)
+{
 }
 
 void ChunkLoaderThread::loop()
@@ -67,6 +87,7 @@ void ChunkLoaderThread::loop()
 			toLoadMutex.unlock();
 
 			Chunk* chunk = new Chunk(coords);
+			chunk->rebuild(GameEngine::inst().getGrid());
 
 			loadedMutex.lock();
 			loaded.push(chunk);

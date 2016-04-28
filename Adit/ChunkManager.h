@@ -7,7 +7,6 @@
 #include "ChunkLoaderThread.h"
 #include "LandGenerator.h"
 
-#include <PolyVox\PagedVolume.h>
 
 class BlockGrid;
 

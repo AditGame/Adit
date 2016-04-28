@@ -6,7 +6,8 @@
 
 #include <PolyVox\Density.h>
 
-LandGenerator::LandGenerator(int seed)
+LandGenerator::LandGenerator(int seed) :
+	_worldGen(seed)
 {
 	noiseModule.SetSeed(seed);
 }
@@ -17,38 +18,21 @@ LandGenerator::~LandGenerator()
 }
 
 
-void LandGenerator::fillVolume(PolyVox::PagedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg)
+void LandGenerator::fillVolume(PolyVox::ThreadedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg)
 {
-	const float sizeMod = 200.0f;
-	utils::NoiseMap heightMap;
-	utils::NoiseMapBuilderPlane heightMapBuilder;
+	const float sizeMod = 20000.0f;
 
-	heightMapBuilder.SetSourceModule(noiseModule);
-	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(reg.getWidthInVoxels(), reg.getDepthInVoxels());
-	heightMapBuilder.SetBounds(
-		((float)reg.getLowerCorner().getX())/ sizeMod,
-		((float)reg.getUpperCorner().getX()) / sizeMod,
-		((float)reg.getLowerCorner().getY()) / sizeMod,
-		((float)reg.getUpperCorner().getY()) / sizeMod);
-	heightMapBuilder.Build();
-
-	utils::RendererImage renderer;
-	utils::Image image;
-	renderer.SetSourceNoiseMap(heightMap);
-	renderer.SetDestImage(image);
-	renderer.Render();
-
-	utils::WriterBMP writer;
-	writer.SetSourceImage(image);
-	writer.SetDestFilename("tutorial.bmp");
-	writer.WriteDestFile();
+	utils::NoiseMap heightMap = _worldGen.generateChunk(reg.getLowerCorner().getX(),
+		(float)reg.getUpperCorner().getX(),
+		(float)reg.getLowerCorner().getY(),
+		(float)reg.getUpperCorner().getY(),
+		sizeMod);
 
 	for (int x = 0; x < reg.getWidthInVoxels(); x++)
 	{
 		for (int y = 0; y < reg.getDepthInVoxels(); y++)
 		{
-			float perlinVal = (float)BlockGrid::gridHeight/2+heightMap.GetValue(x, y)*(float)BlockGrid::gridHeight /4;
+			float perlinVal = (float)BlockGrid::gridHeight/2+(heightMap.GetValue(x, y)/ 8192.0)*(float)BlockGrid::gridHeight /4;
 			for (int chunkZ = 0; chunkZ < reg.getHeightInVoxels(); chunkZ++)
 			{
 				CompositeBlock::blockDataType voxel;
@@ -64,6 +48,10 @@ void LandGenerator::fillVolume(PolyVox::PagedVolume<CompositeBlock::blockDataTyp
 				else if (z < perlinVal)
 				{
 					voxel = BlockType::BlockType_Grass;
+				}
+				else if (z < (float)BlockGrid::gridHeight / 2)
+				{
+					voxel = BlockType::BlockType_Water;
 				}
 				else
 				{

@@ -16,7 +16,7 @@
 #include "BlockGrid.h"
 #include "SyncedMotionState.h"
 
-Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135)), _headNode(new osg::PositionAttitudeTransform), _bodySwitch(new osg::Switch), _firstPerson(true), _controller(this)
+Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(0,0,135 * OSGRenderer::BLOCK_WIDTH)), _headNode(new osg::PositionAttitudeTransform), _bodySwitch(new osg::Switch), _firstPerson(true), _controller(this)
 {
 	_baseNode->addChild(_bodySwitch);
 	_bodySwitch->addChild(_headNode);
@@ -69,7 +69,7 @@ Player::~Player()
 
 void Player::update(GameEngine * eng, btScalar time)
 {
-	_controller.update();
+	_controller.update(time);
 	_destructionController.highlightBlock(this);
 }
 

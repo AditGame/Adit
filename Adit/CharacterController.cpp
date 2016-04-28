@@ -10,7 +10,7 @@ CharacterController::CharacterController(Player* player) :
 {
 }
 
-void CharacterController::update()
+void CharacterController::update(double time)
 {
 	//if no player is set up exit early
 	if (_player == nullptr)
@@ -104,7 +104,7 @@ void CharacterController::updateState()
 			if (z == 0.0)
 				z = initZ;
 			else
-				z *= 5;
+				z *= _player->getStats().getJumpSpeed();
 
 			_player->getRigidBody()->setLinearVelocity(btVector3(cos(angle)*mag, sin(angle)*mag, z));
 		}

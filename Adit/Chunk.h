@@ -29,6 +29,8 @@ public:
 
 	void attachToGrid(osg::Group* gridNode);
 
+	void attachToWorld();
+
 	Coords getlocation() { return _chunkLocation;  }
 
 	static bool isInBounds(Coords location);

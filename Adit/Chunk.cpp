@@ -32,11 +32,14 @@ Chunk::Chunk(Coords chunkLocation, osg::Group* gridNode) :
 {
 	if (gridNode != nullptr)
 		attachToGrid(gridNode);
+
+	osg::Vec3d position(_chunkLocation.x()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.y()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.z()*chunkHeight*OSGRenderer::BLOCK_WIDTH);
+	_baseNode->setPosition(position);
 }
 
 Chunk::~Chunk()
 {
-	if (_parentNode != nullptr)
+	if (_parentNode != nullptr && _cubeMeshNode != nullptr)
 		_parentNode->removeChild(_baseNode);
 
 	if (_rigidBody != nullptr)
@@ -51,9 +54,17 @@ Chunk::~Chunk()
 void Chunk::attachToGrid(osg::Group * gridNode)
 {
 	_parentNode = gridNode;
-	_parentNode->addChild(_baseNode);
-	osg::Vec3d position(_chunkLocation.x()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.y()*chunkWidth*OSGRenderer::BLOCK_WIDTH, _chunkLocation.z()*chunkHeight*OSGRenderer::BLOCK_WIDTH);
-	_baseNode->setPosition(position);
+	if (_cubeMeshNode != nullptr)
+	{
+		_parentNode->addChild(_baseNode);
+	}
+	attachToWorld();
+}
+
+void Chunk::attachToWorld()
+{
+	if(_rigidBody!=nullptr)
+		GameEngine::inst().getPhysics()->getWorld()->addRigidBody(_rigidBody);
 }
 
 bool Chunk::isInBounds(Coords location)
@@ -125,6 +136,11 @@ void Chunk::rebuild(BlockGrid* grid)
 		return;
 	}
 
+	if (_parentNode != nullptr)
+	{
+		attachToGrid(_parentNode);
+	}
+
 	//add the mesh to the world
 	_baseNode->addChild(_cubeMeshNode);
 
@@ -146,7 +162,4 @@ void Chunk::rebuild(BlockGrid* grid)
 	{
 		_rigidBody->setCollisionShape(_physShape);
 	}
-
-	//add the rigid body to the world
-  	GameEngine::inst().getPhysics()->getWorld()->addRigidBody(_rigidBody);
 }

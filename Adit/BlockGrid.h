@@ -3,7 +3,7 @@
 #include "ChunkManager.h"
 #include "CompositeBlock.h"
 
-#include <PolyVox\PagedVolume.h>
+#include "ThreadedVolume.h"
 
 class BlockGrid
 {
@@ -13,7 +13,7 @@ public:
 
 	static const int gridHeight;
 
-	typedef PolyVox::PagedVolume<CompositeBlock::blockDataType> blockMap_type;
+	typedef PolyVox::ThreadedVolume<CompositeBlock::blockDataType> blockMap_type;
 
 	ChunkManager* chunkManager;
 	CompositeBlock::blockDataType getBlock(Coords location);

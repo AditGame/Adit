@@ -6,7 +6,7 @@ VolumePager::~VolumePager()
 {
 }
 
-void VolumePager::pageIn(const PolyVox::Region & region, PolyVox::PagedVolume<CompositeBlock::blockDataType>::Chunk * pChunk)
+void VolumePager::pageIn(const PolyVox::Region & region, PolyVox::ThreadedVolume<CompositeBlock::blockDataType>::Chunk * pChunk)
 {
 	POLYVOX_ASSERT(pChunk, "Attempting to page in NULL chunk");
 	POLYVOX_ASSERT(pChunk->getData(), "Chunk must have valid data");
@@ -43,7 +43,7 @@ void VolumePager::pageIn(const PolyVox::Region & region, PolyVox::PagedVolume<Co
 	}
 }
 
-void VolumePager::pageOut(const PolyVox::Region & region, PolyVox::PagedVolume<CompositeBlock::blockDataType>::Chunk * pChunk)
+void VolumePager::pageOut(const PolyVox::Region & region, PolyVox::ThreadedVolume<CompositeBlock::blockDataType>::Chunk * pChunk)
 {
 	POLYVOX_ASSERT(pChunk, "Attempting to page out NULL chunk");
 	POLYVOX_ASSERT(pChunk->getData(), "Chunk must have valid data");

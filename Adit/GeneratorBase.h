@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PolyVox\PagedVolume.h>
+#include "ThreadedVolume.h"
 
 #include "CompositeBlock.h"
 
@@ -10,6 +10,6 @@ public:
 	GeneratorBase();
 	~GeneratorBase();
 
-	virtual void fillVolume(PolyVox::PagedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg) = 0;
+	virtual void fillVolume(PolyVox::ThreadedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg) = 0;
 };
 

@@ -7,7 +7,7 @@ class CharacterController
 public:
 	CharacterController(Player* player);
 
-	void update();
+	void update(double time);
 
 private:
 
