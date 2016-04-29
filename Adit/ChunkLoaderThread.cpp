@@ -22,18 +22,31 @@ ChunkLoaderThread::ChunkLoaderThread()
 	{
 		loadThreads.push_back(new std::thread([=] { loop(); }));
 	}
+	for (int i = 0; i < 1; i++)
+	{
+		loadThreads.push_back(new std::thread([=] { priorityLoop(); }));
+	}
 }
 
 
 ChunkLoaderThread::~ChunkLoaderThread()
 {
+	stopFlag = true;
+	while(!loadThreads.empty())
+	{
+		loadThreads.front()->join();
+		loadThreads.pop_front();
+	}
 	std::cout << "chunkloading done" << std::endl;
 }
 
-void ChunkLoaderThread::requestLoadChunk(Coords location)
+void ChunkLoaderThread::requestLoadChunk(Coords location, bool front)
 {
 	std::lock_guard<std::mutex> mutexlock(loadedMutex);
-	toLoad.push(location);
+	if (front)
+		priorityToLoad.push_back(location);
+	else
+		toLoad.push_back(location);
 }
 
 void ChunkLoaderThread::waitUntilEmpty()
@@ -59,7 +72,7 @@ Chunk * ChunkLoaderThread::getLoadedChunk()
 	else
 	{
 		Chunk* returnChunk = loaded.front();
-		loaded.pop();
+		loaded.pop_front();
 		return returnChunk;
 	}
 }
@@ -83,14 +96,42 @@ void ChunkLoaderThread::loop()
 		{
 			//Retrieve oldest load request
 			Coords coords = toLoad.front();
-			toLoad.pop();
+			toLoad.pop_front();
 			toLoadMutex.unlock();
 
 			Chunk* chunk = new Chunk(coords);
 			chunk->rebuild(GameEngine::inst().getGrid());
 
 			loadedMutex.lock();
-			loaded.push(chunk);
+			loaded.push_back(chunk);
+			loadedMutex.unlock();
+		}
+	}
+}
+
+void ChunkLoaderThread::priorityLoop()
+{
+	stopFlag = false;
+	while (!stopFlag)
+	{
+		priorityToLoadMutex.lock();
+		if (priorityToLoad.size() == 0)
+		{
+			priorityToLoadMutex.unlock();
+			Sleep(500); //nothing to load? sleep for a bit
+		}
+		else
+		{
+			//Retrieve oldest load request
+			Coords coords = priorityToLoad.front();
+			priorityToLoad.pop_front();
+			priorityToLoadMutex.unlock();
+
+			Chunk* chunk = new Chunk(coords);
+			chunk->rebuild(GameEngine::inst().getGrid());
+
+			loadedMutex.lock();
+			loaded.push_front(chunk);
 			loadedMutex.unlock();
 		}
 	}

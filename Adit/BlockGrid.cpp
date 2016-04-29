@@ -20,6 +20,7 @@ BlockGrid::BlockGrid(osg::Group* rootNode) : _parentNode(rootNode)
 
 BlockGrid::~BlockGrid()
 {
+	delete chunkManager;
 	_parentNode->removeChild(_baseNode);
 	_blockmap->flushAll();
 	delete _blockmap;

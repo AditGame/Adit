@@ -14,7 +14,7 @@ public:
 	ChunkLoaderThread();
 	~ChunkLoaderThread();
 
-	void requestLoadChunk(Coords location);
+	void requestLoadChunk(Coords location, bool front=false);
 	Chunk* getLoadedChunk();
 
 	void removeChunk(Coords location);
@@ -28,10 +28,13 @@ public:
 	ChunkLoaderThread(const ChunkLoaderThread& origin) {} // add this line
 
 	void loop();
+	void priorityLoop();
 private:
-	std::queue<Coords> toLoad;
-	std::queue<Chunk*> loaded;
+	std::list<Coords> toLoad;
+	std::list<Coords> priorityToLoad;
+	std::list<Chunk*> loaded;
 	std::mutex toLoadMutex;
+	std::mutex priorityToLoadMutex;
 	std::mutex loadedMutex;
 	bool stopFlag;
 

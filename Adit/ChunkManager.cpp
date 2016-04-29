@@ -35,12 +35,10 @@ void ChunkManager::setDirty(Coords coords, bool front)
 	if (it == _chunkMap.end())
 		return;
 
-	Chunk* chunk = it->second;
+	//delete it->second;
+	//_chunkMap.erase(it);
 
-	if (front)
-		_dirtyChunks.push_front(chunk);
-	else
-		_dirtyChunks.push_back(chunk);
+	chunkLoader.requestLoadChunk(coords, front);
 }
 
 void ChunkManager::updateChunks()
@@ -48,6 +46,13 @@ void ChunkManager::updateChunks()
 	Chunk* chunk = chunkLoader.getLoadedChunk();
 	if (chunk != nullptr && chunk->getlocation().dist_squared_2D(_center) < _visibility * _visibility)
 	{
+		chunkMap_type::iterator it = _chunkMap.find(chunk->getlocation());
+		if (it != _chunkMap.end())
+		{
+			delete it->second;
+			_chunkMap.erase(it);
+		}
+
 		_chunkMap.emplace(chunk->getlocation(), chunk);
 		chunk->attachToGrid(_gridContainer->getBaseNode());
 	}

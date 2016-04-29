@@ -214,9 +214,9 @@ namespace PolyVox
 		~ThreadedVolume();
 
 		/// Gets a voxel at the position given by <tt>x,y,z</tt> coordinates
-		VoxelType getVoxel(int32_t uXPos, int32_t uYPos, int32_t uZPos) const;
+		VoxelType getVoxel(int32_t uXPos, int32_t uYPos, int32_t uZPos);
 		/// Gets a voxel at the position given by a 3D vector
-		VoxelType getVoxel(const Vector3DInt32& v3dPos) const;
+		VoxelType getVoxel(const Vector3DInt32& v3dPos);
 
 		/// Sets the voxel at the position given by <tt>x,y,z</tt> coordinates
 		void setVoxel(int32_t uXPos, int32_t uYPos, int32_t uZPos, VoxelType tValue);
@@ -240,7 +240,7 @@ namespace PolyVox
 
 	private:
 		bool canReuseLastAccessedChunk(int32_t iChunkX, int32_t iChunkY, int32_t iChunkZ) const;
-		Chunk* getChunk(int32_t uChunkX, int32_t uChunkY, int32_t uChunkZ) const;
+		Chunk* getChunk(int32_t uChunkX, int32_t uChunkY, int32_t uChunkZ);
 
 		// Storing these properties individually has proved to be faster than keeping
 		// them in a Vector3DInt32 as it avoids constructions and comparison overheads.
@@ -271,6 +271,8 @@ namespace PolyVox
 		int32_t m_iChunkMask;
 
 		Pager* m_pPager = nullptr;
+
+		std::map<uint32_t, std::mutex> chunkMutexes;
 	};
 }
 

@@ -74,11 +74,11 @@ bool Chunk::isInBounds(Coords location)
 
 bool Chunk::isEmpty(BlockGrid* volume)
 {
-	for (int x = _chunkLocation.x()*chunkWidth; x < _chunkLocation.x()*chunkWidth + chunkWidth; x++)
+	for (int x = _chunkLocation.x()*chunkWidth; x < _chunkLocation.x()*chunkWidth + chunkWidth - 1; x++)
 	{
-		for (int y = _chunkLocation.y()*chunkWidth; y < _chunkLocation.y()*chunkWidth + chunkWidth; y++)
+		for (int y = _chunkLocation.y()*chunkWidth; y < _chunkLocation.y()*chunkWidth + chunkWidth - 1; y++)
 		{
-			for (int z = _chunkLocation.z()*chunkHeight; z < _chunkLocation.z()*chunkHeight + chunkHeight; z++)
+			for (int z = _chunkLocation.z()*chunkHeight; z < _chunkLocation.z()*chunkHeight + chunkHeight - 1; z++)
 			{
 				if (volume->getBlockMap()->getVoxel(x, y, z) != BlockType_Default)
 					return false;
@@ -94,7 +94,7 @@ void Chunk::rebuild(BlockGrid* grid)
 	if (z > 255) z = 255;
 	PolyVox::Region reg(
 		_chunkLocation.x()*chunkWidth,				_chunkLocation.y()*chunkWidth,				_chunkLocation.z()*chunkHeight,
-		_chunkLocation.x()*chunkWidth + chunkWidth, _chunkLocation.y()*chunkWidth + chunkWidth, z);
+		_chunkLocation.x()*chunkWidth + chunkWidth-1, _chunkLocation.y()*chunkWidth + chunkWidth-1, z);
 
 	using namespace PolyVox;
 	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;

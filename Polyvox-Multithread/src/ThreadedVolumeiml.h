@@ -114,7 +114,7 @@ namespace PolyVox
 	/// \return The voxel value
 	////////////////////////////////////////////////////////////////////////////////
 	template <typename VoxelType>
-	VoxelType ThreadedVolume<VoxelType>::getVoxel(int32_t uXPos, int32_t uYPos, int32_t uZPos) const
+	VoxelType ThreadedVolume<VoxelType>::getVoxel(int32_t uXPos, int32_t uYPos, int32_t uZPos)
 	{
 		const int32_t chunkX = uXPos >> m_uChunkSideLengthPower;
 		const int32_t chunkY = uYPos >> m_uChunkSideLengthPower;
@@ -136,7 +136,7 @@ namespace PolyVox
 	/// \return The voxel value
 	////////////////////////////////////////////////////////////////////////////////
 	template <typename VoxelType>
-	VoxelType ThreadedVolume<VoxelType>::getVoxel(const Vector3DInt32& v3dPos) const
+	VoxelType ThreadedVolume<VoxelType>::getVoxel(const Vector3DInt32& v3dPos)
 	{
 		return getVoxel(v3dPos.getX(), v3dPos.getY(), v3dPos.getZ());
 	}
@@ -237,7 +237,7 @@ namespace PolyVox
 	}
 
 	template <typename VoxelType>
-	typename ThreadedVolume<VoxelType>::Chunk* ThreadedVolume<VoxelType>::getChunk(int32_t uChunkX, int32_t uChunkY, int32_t uChunkZ) const
+	typename ThreadedVolume<VoxelType>::Chunk* ThreadedVolume<VoxelType>::getChunk(int32_t uChunkX, int32_t uChunkY, int32_t uChunkZ)
 	{
 		Chunk* pChunk = nullptr;
 
@@ -256,6 +256,7 @@ namespace PolyVox
 		// the chunk is not found because the whole array has to be searched, but in this case we are going to have to page the data in
 		// from an external source which is likely to be slow anyway.
 		uint32_t iIndex = iPosisionHash;
+		std::lock_guard<std::mutex> mutexLock(chunkMutexes[iIndex]);
 		do
 		{
 			if (m_arrayChunks[iIndex])
@@ -330,6 +331,7 @@ namespace PolyVox
 				m_arrayChunks[uOldestChunkIndex] = nullptr;
 			}
 		}
+
 
 		m_pLastAccessedChunk = pChunk;
 		m_v3dLastAccessedChunkX = uChunkX;
