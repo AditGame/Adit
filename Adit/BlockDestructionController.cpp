@@ -15,7 +15,13 @@
 
 #include "osg\ShapeDrawable"
 
-BlockDestructionController::BlockDestructionController() : _parentNode(nullptr), _baseNode(new osg::PositionAttitudeTransform)
+BlockDestructionController::BlockDestructionController() :
+	_parentNode(nullptr),
+	_baseNode(new osg::PositionAttitudeTransform),
+	_createCoolDown(0),
+	_destroyTime(0),
+	_isDestroying(false),
+	_isCreating(false)
 {
 	attach(GameEngine::inst().getRoot());
 
@@ -31,6 +37,58 @@ BlockDestructionController::BlockDestructionController() : _parentNode(nullptr),
 BlockDestructionController::~BlockDestructionController()
 {
 	attach(nullptr);
+}
+
+void BlockDestructionController::update(Player * player, double time)
+{
+	highlightBlock(player);
+
+	if (_createCoolDown <= 0.0 && _isCreating)
+	{
+		createBlock(player, BlockType::BlockType_Stone);
+		_createCoolDown = player->getStats().getCreateBlockCooldown();
+	}
+	else
+	{
+		_createCoolDown -= time;
+	}
+
+	if (_isDestroying)
+	{
+		_destroyTime += time;
+
+		if (_destroyTime >= player->getStats().getDestroyBlockTime())
+		{
+			destroyBlock(player);
+			_destroyTime = 0;
+		}
+	}
+	else
+	{
+		_destroyTime = 0;
+	}
+	
+}
+
+void BlockDestructionController::startDestroyBlock(Player * player)
+{
+	_isDestroying = true;
+}
+
+void BlockDestructionController::startCreateBlock(Player * player)
+{
+	_isCreating = true;
+}
+
+void BlockDestructionController::endDestroyBlock(Player * player)
+{
+	_isDestroying = false;
+}
+
+void BlockDestructionController::endCreateBlock(Player * player)
+{
+	_isCreating = false;
+	_createCoolDown = 0.0;
 }
 
 void BlockDestructionController::highlightBlock(Player * player)
@@ -56,6 +114,15 @@ void BlockDestructionController::destroyBlock(Player * player)
 	if (!result.didHit) return;
 
 	GameEngine::inst().getGrid()->setBlock(result.hitVoxel, BlockType::BlockType_Default, true);
+}
+
+void BlockDestructionController::createBlock(Player * player, int block)
+{
+	PolyVox::PickResult result = preformVoxelRaycast(player);
+
+	if (!result.didHit) return;
+
+	GameEngine::inst().getGrid()->setBlock(result.previousVoxel, block, true);
 }
 
 PolyVox::PickResult BlockDestructionController::preformVoxelRaycast(Player * player)

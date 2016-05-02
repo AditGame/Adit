@@ -14,7 +14,7 @@ class Chunk;
 class LandGenerator : public GeneratorBase
 {
 public:
-	LandGenerator(int seed = 0);
+	LandGenerator(int seed = 2);
 	~LandGenerator();
 
 	void fillVolume(PolyVox::ThreadedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg);

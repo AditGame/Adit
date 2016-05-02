@@ -20,7 +20,7 @@ LandGenerator::~LandGenerator()
 
 void LandGenerator::fillVolume(PolyVox::ThreadedVolume<CompositeBlock::blockDataType>::Chunk* volume, const PolyVox::Region& reg)
 {
-	const float sizeMod = 20000.0f;
+	const float sizeMod = 200000.0f;
 
 	utils::NoiseMap heightMap = _worldGen.generateChunk(reg.getLowerCorner().getX(),
 		(float)reg.getUpperCorner().getX(),
@@ -32,7 +32,7 @@ void LandGenerator::fillVolume(PolyVox::ThreadedVolume<CompositeBlock::blockData
 	{
 		for (int y = 0; y < reg.getDepthInVoxels(); y++)
 		{
-			float perlinVal = (float)BlockGrid::gridHeight/2+(heightMap.GetValue(x, y)/ 8192.0)*(float)BlockGrid::gridHeight /4;
+			float perlinVal = (float)BlockGrid::gridHeight/2+(heightMap.GetValue(x, y)/ 8192.0)*(float)BlockGrid::gridHeight /2;
 			for (int chunkZ = 0; chunkZ < reg.getHeightInVoxels(); chunkZ++)
 			{
 				CompositeBlock::blockDataType voxel;

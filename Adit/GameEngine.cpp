@@ -123,6 +123,8 @@ void GameEngine::go()
 	viewer->realize();
 
 	_grid->chunkManager->processAllDirty();
+	_grid->chunkManager->setVisibility(8);
+
 	while (!viewer->done()) {
 		currSimTime = viewer->getFrameStamp()->getSimulationTime();
 

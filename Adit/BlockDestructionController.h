@@ -15,9 +15,14 @@ public:
 	BlockDestructionController();
 	~BlockDestructionController();
 
-	void highlightBlock(Player* player);
+	void update(Player* player, double time);
 
-	void destroyBlock(Player* player);
+	void startDestroyBlock(Player* player);
+	void startCreateBlock(Player* player);
+
+	void endDestroyBlock(Player* player);
+	void endCreateBlock(Player* player);
+
 
 	static PolyVox::PickResult preformVoxelRaycast(Player* player);
 
@@ -30,5 +35,16 @@ private:
 
 	osg::Geode* _geode;
 	osg::Geometry* _geom;
+
+	void destroyBlock(Player* player);
+
+	void createBlock(Player* player, int);
+
+	void highlightBlock(Player* player);
+
+	double _createCoolDown;
+	double _destroyTime;
+	bool _isDestroying;
+	bool _isCreating;
 
 };

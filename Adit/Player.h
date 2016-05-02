@@ -37,7 +37,7 @@ public:
 
 	CharacterStats& getStats() { return _stats; }
 
-	void destroyBlock();
+	BlockDestructionController& getBlockController() { return _destructionController; }
 
 private:
 

@@ -48,7 +48,7 @@ void OSGRenderer::setUp()
 	loadShaderSource(brickFragmentObject, "shaders/brick.frag");
 }
 
-const float OSGRenderer::BLOCK_WIDTH = 3.0f;
+const float OSGRenderer::BLOCK_WIDTH = 1.0f;
 
 void OSGRenderer::render(BlockGrid& grid)
 {
@@ -74,7 +74,6 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<Composit
 	osg::Geode* geode = new osg::Geode();
 	osg::Geometry* geom = new osg::Geometry();
 
-	geom->setUseVertexBufferObjects(true);
 
 	osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(GL_TRIANGLES, mesh.getNoOfIndices());
 
@@ -114,12 +113,11 @@ osg::Geode* OSGRenderer::meshToGeode(PolyVox::Mesh<PolyVox::CubicVertex<Composit
 
 
 	// Construct the polygon geometry
-
-	geom->setStateSet(brickState);
-	geom->setDataVariance(osg::Object::DYNAMIC);
 	geom->setUseDisplayList(false);
 	geom->setUseVertexBufferObjects(true);
 	geom->setVertexArray(vertices.get());
+	geom->setStateSet(brickState);
+	geom->setDataVariance(osg::Object::DYNAMIC);
 
 	geom->addPrimitiveSet(indices.get());
 

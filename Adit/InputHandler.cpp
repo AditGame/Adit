@@ -168,7 +168,32 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 			{
 			case (osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) :
 			{
-				_player->destroyBlock();
+				_player->getBlockController().startDestroyBlock(_player);
+				break;
+			}
+			case (osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON) :
+			{
+				_player->getBlockController().startCreateBlock(_player);
+				break;
+			}
+			}
+		}
+		break;
+	}
+	case(osgGA::GUIEventAdapter::RELEASE) :
+	{
+		if (_player != nullptr)
+		{
+			switch (ea.getButton())
+			{
+			case (osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) :
+			{
+				_player->getBlockController().endDestroyBlock(_player);
+				break;
+			}
+			case (osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON) :
+			{
+				_player->getBlockController().endCreateBlock(_player);
 				break;
 			}
 			}

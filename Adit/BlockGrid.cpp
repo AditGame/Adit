@@ -5,6 +5,8 @@
 #include "VolumePager.h"
 #include "LandGenerator.h"
 
+#include "OSGRenderer.h"
+
 const int BlockGrid::gridHeight = 255;
 
 BlockGrid::BlockGrid(osg::Group* rootNode) : _parentNode(rootNode)
@@ -12,7 +14,7 @@ BlockGrid::BlockGrid(osg::Group* rootNode) : _parentNode(rootNode)
 	_baseNode = new osg::Group;
 	_parentNode->addChild(_baseNode);
 	chunkManager = new ChunkManager(this);
-	chunkManager->setCenterChunk(Coords(0, 0, gridHeight / 2 / Chunk::chunkHeight));
+	chunkManager->setCenterChunk(ChunkManager::blockToChunkCoords(Coords(1000,1000,0)));
 	LandGenerator* gen = new LandGenerator();
 	VolumePager* pager = new VolumePager(gen);
 	_blockmap = new blockMap_type(pager);
