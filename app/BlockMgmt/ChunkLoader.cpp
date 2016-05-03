@@ -42,11 +42,18 @@ ChunkLoader::~ChunkLoader()
 
 void ChunkLoader::requestLoadChunk(Coords location, bool front)
 {
-	std::lock_guard<std::mutex> mutexlock(loadedMutex);
 	if (front)
+	{
+		priorityToLoadMutex.lock();
 		priorityToLoad.push_back(location);
+		priorityToLoadMutex.unlock();
+	}
 	else
+	{
+		toLoadMutex.lock();
 		toLoad.push_back(location);
+		toLoadMutex.unlock();
+	}
 }
 
 void ChunkLoader::waitUntilEmpty()
@@ -67,7 +74,7 @@ void ChunkLoader::waitUntilEmpty()
 Chunk * ChunkLoader::getLoadedChunk()
 {
 	std::lock_guard<std::mutex> mutexlock(loadedMutex);
-	if (loaded.size() == 0)
+	if (loaded.empty())
 		return nullptr;
 	else
 	{
@@ -84,13 +91,14 @@ void ChunkLoader::removeChunk(Coords location)
 void ChunkLoader::loop()
 {
 	stopFlag = false;
+	Sleep(10); //give the rest of the program a wee bit to set up
 	while (!stopFlag)
 	{
 		toLoadMutex.lock();
 		if (toLoad.size() == 0)
 		{
 			toLoadMutex.unlock();
-			Sleep(5); //nothing to load? sleep for a bit
+			std::this_thread::yield(); //yield to prevent spinlocking
 		}
 		else
 		{
@@ -112,13 +120,14 @@ void ChunkLoader::loop()
 void ChunkLoader::priorityLoop()
 {
 	stopFlag = false;
+	Sleep(10); //give the rest of the program a wee bit to set up
 	while (!stopFlag)
 	{
 		priorityToLoadMutex.lock();
 		if (priorityToLoad.size() == 0)
 		{
 			priorityToLoadMutex.unlock();
-			Sleep(5); //nothing to load? sleep for a bit
+			std::this_thread::yield(); //yield to prevent spinlocking
 		}
 		else
 		{
