@@ -5,6 +5,9 @@ Adit/tutorial.bmp
 Adit/saves/*
 Adit/regionMaps/*
 
+#cmake build directory
+build/*
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

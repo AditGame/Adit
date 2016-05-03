@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#include "GameEngine.h"
+#include "Engine/GameEngine.h"
 
 void ChunkLoader::operator()()
 {
@@ -90,7 +90,7 @@ void ChunkLoader::loop()
 		if (toLoad.size() == 0)
 		{
 			toLoadMutex.unlock();
-			Sleep(500); //nothing to load? sleep for a bit
+			Sleep(5); //nothing to load? sleep for a bit
 		}
 		else
 		{
@@ -118,7 +118,7 @@ void ChunkLoader::priorityLoop()
 		if (priorityToLoad.size() == 0)
 		{
 			priorityToLoadMutex.unlock();
-			Sleep(500); //nothing to load? sleep for a bit
+			Sleep(5); //nothing to load? sleep for a bit
 		}
 		else
 		{

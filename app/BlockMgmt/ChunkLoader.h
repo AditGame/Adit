@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Coords.h"
+#include "Utilities/Coords.h"
 #include <queue>
 #include <thread>
 #include <mutex>
