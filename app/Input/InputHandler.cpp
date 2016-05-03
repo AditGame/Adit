@@ -144,6 +144,7 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 			float mouseX = ea.getX();
 			float mouseY = ea.getY();
 			_player->modRotation(osg::Vec3d((double)(ea.getX() - _oldMouseX) / 1000.0, (double)(ea.getY() - _oldMouseY) / 1000.0, 0));
+			std::cout << (double)(ea.getX() - _oldMouseX) / 1000.0 << " " << (double)(ea.getY() - _oldMouseY) / 1000.0 << std::endl;
 			//aa.requestWarpPointer(200, 200);aa
 			if (_cursorLock)
 			{

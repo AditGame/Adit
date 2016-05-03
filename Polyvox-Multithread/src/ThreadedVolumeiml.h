@@ -256,7 +256,9 @@ namespace PolyVox
 		// the chunk is not found because the whole array has to be searched, but in this case we are going to have to page the data in
 		// from an external source which is likely to be slow anyway.
 		uint32_t iIndex = iPosisionHash;
+		chunkMutexesMutex.lock();
 		std::lock_guard<std::mutex> mutexLock(chunkMutexes[iIndex]);
+		chunkMutexesMutex.unlock();
 		do
 		{
 			if (m_arrayChunks[iIndex])

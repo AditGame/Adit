@@ -29,7 +29,7 @@ public:
 	//Rotation Logic
 	virtual void setRotation(osg::Vec3d);
 	void modRotation(osg::Vec3d);
-	osg::Vec3f getRotation() { return _rotation; }
+	osg::Vec3d getRotation() { return _rotation; }
 
 	//OSG Node Logic
 	virtual void attach(osg::Group* group);

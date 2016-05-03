@@ -273,6 +273,7 @@ namespace PolyVox
 		Pager* m_pPager = nullptr;
 
 		std::map<uint32_t, std::mutex> chunkMutexes;
+		std::mutex chunkMutexesMutex;
 	};
 }
 

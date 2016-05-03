@@ -32,11 +32,11 @@ void PlayerCamera::update()
 		eye = GameEngine::inst().getPlayer()->getEyePosition();
 		osg::Vec3d rot = GameEngine::inst().getPlayer()->getRotation();
 
-		float yaw = -rot.x() - osg::PI_2;
-		float pitch = -rot.y();
-		float x = -cos(yaw)*cos(pitch);
-		float y = -sin(yaw)*cos(pitch);
-		float z = -sin(pitch);
+		double yaw = -rot.x() - osg::PI_2;
+		double pitch = -rot.y();
+		double x = -cos(yaw)*cos(pitch);
+		double y = -sin(yaw)*cos(pitch);
+		double z = -sin(pitch);
 
 		lookAt = osg::Vec3d(eye.x() + x, eye.y() + y, eye.z() + z);
 	}
@@ -45,11 +45,11 @@ void PlayerCamera::update()
 		lookAt = osg::computeLocalToWorld(GameEngine::inst().getPlayer()->getEyeNode()->getParentalNodePaths().at(0)).getTrans();
 		osg::Vec3d rot = GameEngine::inst().getPlayer()->getRotation();
 
-		float yaw = -rot.x() - osg::PI_2;
-		float pitch = -rot.y();
-		float x = cos(yaw)*cos(pitch);
-		float y = sin(yaw)*cos(pitch);
-		float z = sin(pitch);
+		double yaw = -rot.x() - osg::PI_2;
+		double pitch = -rot.y();
+		double x = cos(yaw)*cos(pitch);
+		double y = sin(yaw)*cos(pitch);
+		double z = sin(pitch);
 
 		eye = osg::Vec3d(lookAt.x() + x*_distance, lookAt.y() + y*_distance, lookAt.z() + z*_distance);
 
