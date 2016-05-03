@@ -31,6 +31,14 @@ BlockDestructionController::BlockDestructionController() :
 	osg::ShapeDrawable* unitCubeDrawable = new osg::ShapeDrawable(box);
 
 	_baseNode->addChild(unitCubeDrawable);
+
+
+	//Box shape used in "canPlaceBlock"
+	boxShape = new btBoxShape(btVector3(OSGRenderer::BLOCK_WIDTH / 2 - 0.1, OSGRenderer::BLOCK_WIDTH / 2 - 0.1, OSGRenderer::BLOCK_WIDTH / 2 - 0.1));
+	boxObj = new btCollisionObject();
+	boxObj->setCollisionShape(boxShape);
+
+	//GameEngine::inst().getPhysics()->getWorld()->addCollisionObject(boxObj);
 }
 
 
@@ -91,6 +99,29 @@ void BlockDestructionController::endCreateBlock(Player * player)
 	_createCoolDown = 0.0;
 }
 
+bool BlockDestructionController::canPlaceBlock(PolyVox::Vector3DInt32 loc)
+{
+	btVector3 btFrom(loc.getX() * OSGRenderer::BLOCK_WIDTH + OSGRenderer::BLOCK_WIDTH/2, loc.getY() * OSGRenderer::BLOCK_WIDTH + OSGRenderer::BLOCK_WIDTH / 2, loc.getZ() * OSGRenderer::BLOCK_WIDTH + OSGRenderer::BLOCK_WIDTH / 2);
+
+	contactTestCallback res(boxObj);
+
+	btTransform startTransform(btMatrix3x3(btQuaternion(0, 0, 0, 1)), btFrom);
+
+	boxObj->setWorldTransform(startTransform);
+
+	GameEngine::inst().getPhysics()->getWorld()->contactTest(boxObj, res);
+
+	if (res.collidedWith.empty())
+	{
+		//there's nothing here
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void BlockDestructionController::highlightBlock(Player * player)
 {
 	PolyVox::PickResult res = preformVoxelRaycast(player);
@@ -122,6 +153,8 @@ void BlockDestructionController::createBlock(Player * player, int block)
 
 	if (!result.didHit) return;
 
+	if (!canPlaceBlock(result.previousVoxel)) return;
+
 	GameEngine::inst().getGrid()->setBlock(result.previousVoxel, block, true);
 }
 
@@ -142,7 +175,7 @@ PolyVox::PickResult BlockDestructionController::preformVoxelRaycast(Player * pla
 
 	using namespace PolyVox;
 
-	Vector3DFloat startVec(start.x() / OSGRenderer::BLOCK_WIDTH, start.y() / OSGRenderer::BLOCK_WIDTH, start.z() / OSGRenderer::BLOCK_WIDTH);
+	Vector3DFloat startVec(start.x() / OSGRenderer::BLOCK_WIDTH - OSGRenderer::BLOCK_WIDTH/2, start.y() / OSGRenderer::BLOCK_WIDTH - OSGRenderer::BLOCK_WIDTH/2, start.z() / OSGRenderer::BLOCK_WIDTH - OSGRenderer::BLOCK_WIDTH/2);
 
 	Vector3DFloat direction(x, y, z);
 	direction.normalise();

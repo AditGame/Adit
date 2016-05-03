@@ -11,8 +11,8 @@ public:
 
 	int getJumpSpeed() { return _runningSpeed; }
 
-	int getCreateBlockCooldown() { return _createCooldown; }
-	int getDestroyBlockTime() { return _destroyTime; }
+	double getCreateBlockCooldown() { return _createCooldown; }
+	double getDestroyBlockTime() { return _destroyTime; }
 
 	int getManipulateDist() { return _manipulateDistance; }
 

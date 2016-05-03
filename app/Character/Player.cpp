@@ -75,7 +75,7 @@ void Player::update(GameEngine * eng, btScalar time)
 
 
 
-void Player::setRotation(osg::Vec3f newRot)
+void Player::setRotation(osg::Vec3d newRot)
 {
 	if (newRot.y() > osg::PI_2) newRot.y() = osg::PI_2;
 	if (newRot.y() < -osg::PI_2) newRot.y() = -osg::PI_2;

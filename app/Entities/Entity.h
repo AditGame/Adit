@@ -27,8 +27,8 @@ public:
 	osg::Vec3d getPosition() { return _baseNode->getPosition(); }
 
 	//Rotation Logic
-	virtual void setRotation(osg::Vec3f);
-	void modRotation(osg::Vec3f);
+	virtual void setRotation(osg::Vec3d);
+	void modRotation(osg::Vec3d);
 	osg::Vec3f getRotation() { return _rotation; }
 
 	//OSG Node Logic
@@ -43,7 +43,7 @@ protected:
 	osg::Group* _parentNode;
 
 	//Seperate out the rotation data from OSG to avoid dealing with quats
-	osg::Vec3f _rotation;
+	osg::Vec3d _rotation;
 
 	//bullet data
 	btRigidBody* _rigidBody;

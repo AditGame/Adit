@@ -47,7 +47,7 @@ void Entity::movePosition(const osg::Vec3d& pos, bool movePhysics)
 	setPosition(getPosition() + pos, movePhysics);
 }
 
-void Entity::setRotation(osg::Vec3f newRot)
+void Entity::setRotation(osg::Vec3d newRot)
 {
 	_rotation = newRot;
 
@@ -66,7 +66,7 @@ void Entity::setRotation(osg::Vec3f newRot)
 	_baseNode->setAttitude(bottomQuat);
 }
 
-void Entity::modRotation(osg::Vec3f modRot)
+void Entity::modRotation(osg::Vec3d modRot)
 {
 	setRotation(modRot + _rotation);
 }

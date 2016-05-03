@@ -25,7 +25,7 @@ public:
 	
 	void update(GameEngine* eng, btScalar time);
 
-	void setRotation(osg::Vec3f);
+	void setRotation(osg::Vec3d);
 
 	osg::Vec3d getEyePosition();
 
