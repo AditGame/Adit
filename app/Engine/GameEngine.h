@@ -9,6 +9,7 @@ class InputHandler;
 class Player;
 class PlayerCamera;
 class PhysicsEngine;
+class GuiEngine;
 
 class GameEngine
 {
@@ -57,6 +58,9 @@ private:
 
 	//Handles/Steps the physics engine
 	PhysicsEngine* _physics;
+
+	//Handles the gui elements
+	GuiEngine* _gui;
 
 	bool _debugDraw;
 

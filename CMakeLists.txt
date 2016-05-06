@@ -16,6 +16,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
 
 #User Options
+option(MYGUI_STATIC "Link static build of Mygui into the binaries" FALSE)
+
 set(ADIT_WORLDGEN_INCLUDE "" CACHE FILEPATH "location of the worldgen source")
 set(ADIT_WORLDGEN_VSPROJ "" CACHE FILEPATH "Location of the worldgen project file")
 
@@ -40,7 +42,12 @@ endif()
 FIND_PACKAGE( osgWorks REQUIRED )
 if( osgWorks_FOUND )
     include( ${osgWorks_USE_FILE} )
-    message( "osgWorks found: ${osgWorks_DIR}" )
+    message( STATUS "osgWorks found: ${osgWorks_DIR}" )
+endif()
+
+FIND_PACKAGE( MyGUI REQUIRED )
+if( MYGUI_FOUND )
+    message( STATUS "myGui found: ${MYGUI_INCLUDE_DIRS}" )
 endif()
 
 #allow absolute paths
@@ -49,8 +56,10 @@ include_directories(${LIBNOISE_INCLUDE_DIR}/..) #for some reason find_package lo
 include_directories(${OPENSCENEGRAPH_INCLUDE_DIRS})
 include_directories(${BULLET_SOURCE})
 include_directories(${POLYVOX_INCLUDE_DIR})
+include_directories(${MYGUI_INCLUDE_DIRS}/..) #find_package, again, looks for include/mygui. This is not normal, so undo this silly business
 link_directories(${LIBNOISE_LIBRARIES})
 link_directories(${osgWorks_DIR})
+link_directories(${MYGUI_LIB_DIR})
 cmake_policy(SET CMP0015 NEW)
 
 #add main project

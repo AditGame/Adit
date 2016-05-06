@@ -22,6 +22,7 @@
 #include "Render/PlayerCamera.h"
 #include "Render/OSGRenderer.h"
 #include "Physics/PhysicsEngine.h"
+#include "Gui\GuiEngine.h"
 
 #include "Utilities/Options.h"
 
@@ -41,6 +42,8 @@ void GameEngine::setup()
 	viewer = setUpView();
 
 	OSGRenderer::setUp();
+
+	_gui = new GuiEngine(root, viewer);
 }
 
 osgViewer::Viewer* GameEngine::setUpView()
@@ -121,6 +124,15 @@ void GameEngine::go()
 	double prevSimTime = viewer->getFrameStamp()->getSimulationTime();
 
 	viewer->realize();
+
+	osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(viewer->getCamera()->getGraphicsContext());
+	if (gw)
+	{
+		// Send window size for MyGUI to initialize
+		int x, y, w, h; gw->getWindowRectangle(x, y, w, h);
+		viewer->getEventQueue()->windowResize(x, y, w, h);
+	}
+
 
 	_grid->chunkManager->processAllDirty();
 	_grid->chunkManager->setVisibility(8);

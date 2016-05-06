@@ -18,6 +18,9 @@ add_adit_dir(Entities
 add_adit_dir(Generation
 	GeneratorBase LandGenerator noiseutils)
 
+add_adit_dir(Gui
+	GuiEngine GuiManager MYGUIManager)
+
 add_adit_dir(Input
 	InputHandler)
 
@@ -25,7 +28,7 @@ add_adit_dir(Physics
 	PhysicsEngine SyncedMotionState)
 
 add_adit_dir(Render
-	OSGRenderer PlayerCamera)
+	OSGRenderer PlayerCamera RenderBins)
 
 add_adit_dir(Utilities
 	Coords Options)
@@ -46,7 +49,12 @@ TARGET_LINK_LIBRARIES(Adit
 	osgwMxd.lib
 	osgdb_osgobjectsd.lib
 	osgdb_osgwToolsd.lib
-	libnoised.lib)
+	libnoised.lib
+	${MYGUI_LIBRARIES}
+	MyGUI.OpenGLPlatform_d.lib
+	opengl32
+	glu32
+	)
 
 # Move the resource directory into the worknig directory so that debugging works right
 add_custom_command(TARGET Adit POST_BUILD
