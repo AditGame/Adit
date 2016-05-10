@@ -19,7 +19,7 @@ add_adit_dir(Generation
 	GeneratorBase LandGenerator noiseutils)
 
 add_adit_dir(Gui
-	GuiEngine GuiManager MYGUIManager)
+	GuiManager MYGUIManager BaseGui EscapeMenu Modes)
 
 add_adit_dir(Input
 	InputHandler)

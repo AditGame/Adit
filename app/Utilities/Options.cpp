@@ -15,6 +15,7 @@ const std::string Options::OPT_SCREEN_WIDTH = "screen_width";
 const std::string Options::OPT_SCREEN_HEIGHT = "screen_height";
 const std::string Options::OPT_SCREEN_NUM = "screen_num";
 const std::string Options::OPT_FOV = "field_of_view";
+const std::string Options::OPT_ESCAPE = "escape";
 
 Options::Options(string name) {
 	load(name);
@@ -71,6 +72,7 @@ void Options::fillDefault() {
     defaultSettings[OPT_RIGHT]=to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_D);
     defaultSettings[OPT_JUMP]=to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_Space);
 	defaultSettings[OPT_FULLSCREEN_KEY] = to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_F11);
+	defaultSettings[OPT_ESCAPE] = to_string(osgGA::GUIEventAdapter::KeySymbol::KEY_Escape);
     defaultSettings[OPT_FULLSCREEN]="true";
     defaultSettings[OPT_SCREEN_WIDTH]="640";
     defaultSettings[OPT_SCREEN_HEIGHT]="480";

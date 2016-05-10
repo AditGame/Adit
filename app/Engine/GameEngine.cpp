@@ -22,7 +22,7 @@
 #include "Render/PlayerCamera.h"
 #include "Render/OSGRenderer.h"
 #include "Physics/PhysicsEngine.h"
-#include "Gui\GuiEngine.h"
+#include "Gui\GuiManager.h"
 
 #include "Utilities/Options.h"
 
@@ -43,7 +43,7 @@ void GameEngine::setup()
 
 	OSGRenderer::setUp();
 
-	_gui = new GuiEngine(root, viewer);
+	_gui = new GuiManager(root, viewer);
 }
 
 osgViewer::Viewer* GameEngine::setUpView()
@@ -93,6 +93,8 @@ osgViewer::Viewer* GameEngine::setUpView()
 	// add the screen capture handler
 	viewer->addEventHandler(new osgViewer::ScreenCaptureHandler);
 
+	viewer->setKeyEventSetsDone(0);
+
 	return viewer;
 }
 
@@ -135,7 +137,7 @@ void GameEngine::go()
 
 
 	_grid->chunkManager->processAllDirty();
-	_grid->chunkManager->setVisibility(8);
+	//_grid->chunkManager->setVisibility(8);
 
 	while (!viewer->done()) {
 		currSimTime = viewer->getFrameStamp()->getSimulationTime();

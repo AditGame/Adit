@@ -9,7 +9,7 @@ class InputHandler;
 class Player;
 class PlayerCamera;
 class PhysicsEngine;
-class GuiEngine;
+class GuiManager;
 
 class GameEngine
 {
@@ -32,6 +32,8 @@ public:
 	BlockGrid* getGrid() { return _grid; }
 	PhysicsEngine* getPhysics() { return _physics; }
 	Player* getPlayer() { return _player; }
+	GuiManager* getGui() { return _gui; }
+	InputHandler* getInput() { return _input; }
 
 	void toggleDebugDraw() { _debugDraw = !_debugDraw; }
 
@@ -60,7 +62,7 @@ private:
 	PhysicsEngine* _physics;
 
 	//Handles the gui elements
-	GuiEngine* _gui;
+	GuiManager* _gui;
 
 	bool _debugDraw;
 

@@ -70,6 +70,8 @@ public:
 	static const std::string OPT_RIGHT;
 	static const std::string OPT_JUMP;
 	static const std::string OPT_FULLSCREEN_KEY;
+	static const std::string OPT_ESCAPE;
+
 	static const std::string OPT_FULLSCREEN;
 	static const std::string OPT_SCREEN_WIDTH;
 	static const std::string OPT_SCREEN_HEIGHT;

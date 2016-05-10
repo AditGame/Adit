@@ -8,6 +8,7 @@
 #include "Physics/PhysicsEngine.h"
 #include "Render/PlayerCamera.h"
 #include "Character/BlockDestructionController.h"
+#include "Gui/GuiManager.h"
 
 #include "Utilities/Options.h"
 
@@ -19,11 +20,15 @@ InputHandler::InputHandler(BlockGrid* grid, GameEngine* eng) :
 
 	Options opt = Options::instance();
 
+	//set up movement keys
 	_channelMap[opt.getInt(Options::OPT_FORWARD)] = Actions::A_Forward;
 	_channelMap[opt.getInt(Options::OPT_BACKWARD)] = Actions::A_Backward;
 	_channelMap[opt.getInt(Options::OPT_LEFT)] = Actions::A_Left;
 	_channelMap[opt.getInt(Options::OPT_RIGHT)] = Actions::A_Right;
 	_channelMap[opt.getInt(Options::OPT_JUMP)] = Actions::A_Jump;
+
+	//set up control keys
+	_channelMap[opt.getInt(Options::OPT_ESCAPE)] = Actions::A_Escape;
 
 
 	_channelValues[Actions::A_Forward] = 0.0f;
@@ -98,6 +103,31 @@ void InputHandler::update()
 		_player->getMovement().leftRight = y;
 		_player->getMovement().jump = z;
 	}
+
+	for (channelValues_type::iterator it = _channelValues.begin(); it != _channelValues.end(); it++)
+	{
+		if (it->second > 0.5)
+		{
+			switch (it->first)
+			{
+			case A_Escape:
+			{
+				//if no gui is currently open, open the escape menu. Otherwise 
+				GuiManager* gui = GameEngine::inst().getGui();
+				GuiMode currmode = gui->getTopGui();
+				if (currmode != GuiMode::GUI_Escape_Menu)
+					gui->addGuiMode(GuiMode::GUI_Escape_Menu);
+				else
+					gui->popGuiMode();
+
+				it->second = 0; //explicitly "disable" this key. TODO: Have something called every time a channel is changed
+			}
+			break;
+			default:
+				break;
+			}
+		}
+	}
 }
 
 bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -111,7 +141,10 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 		if (it != _channelMap.end())
 		{
 			_channelValues[it->second] = 1.0f;
+			return true; //input handled
 		}
+
+		//hardwired keys
 		switch (ea.getKey())
 		{
 		case osgGA::GUIEventAdapter::KeySymbol::KEY_I:
@@ -133,31 +166,22 @@ bool InputHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 		if (it != _channelMap.end())
 		{
 			_channelValues[it->second] = 0.0f;
+			return true; //input handled
 		}
 		break;
 	}
 	case(osgGA::GUIEventAdapter::DRAG): //fix for moving mouse while holding down a mouse button
 	case(osgGA::GUIEventAdapter::MOVE) :
 	{
-		if (_player != nullptr)
+		if (_cursorLock && _player != nullptr)
 		{
 			float mouseX = ea.getX();
 			float mouseY = ea.getY();
 			_player->modRotation(osg::Vec3d((double)(ea.getX() - _oldMouseX) / 1000.0, (double)(ea.getY() - _oldMouseY) / 1000.0, 0));
-			std::cout << (double)(ea.getX() - _oldMouseX) / 1000.0 << " " << (double)(ea.getY() - _oldMouseY) / 1000.0 << std::endl;
-			//aa.requestWarpPointer(200, 200);aa
-			if (_cursorLock)
-			{
-				_oldMouseX = ea.getWindowWidth() / 2;
-				_oldMouseY = ea.getWindowHeight() / 2;
-				aa.requestWarpPointer(_oldMouseX, _oldMouseY);
-			}
-			else
-			{
-				_oldMouseX = mouseX;
-				_oldMouseY = mouseY;
-			}
 
+			_oldMouseX = ea.getWindowWidth() / 2;
+			_oldMouseY = ea.getWindowHeight() / 2;
+			aa.requestWarpPointer(_oldMouseX, _oldMouseY);
 		}
 		break;
 	}
@@ -239,4 +263,6 @@ void InputHandler::setCursorLock(bool v)
 				windows[0]->setCursor(osgViewer::GraphicsWindow::MouseCursor::InheritCursor);
 		}
 	}
+
+	MyGUI::PointerManager::getInstance().setVisible(!_cursorLock); //show/hide the mygui cursor as well
 }

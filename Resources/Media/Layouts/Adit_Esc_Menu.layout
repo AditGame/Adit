@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Widget" skin="PanelEmpty" position="252 384 520 255" align="Center" layer="Main" name="main">
+        <Widget type="Button" skin="Button" position="5 5 510 60" align="Default" name="resume">
+            <Property key="Caption" value="Resume Game"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position="265 180 250 65" align="Default" name="exit">
+            <Property key="Caption" value="Exit"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position="5 110 510 60" align="Default" name="settings">
+            <Property key="Caption" value="Settings"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position="5 180 250 65" align="Default" name="main_menu">
+            <Property key="Caption" value="Main Menu"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+    </Widget>
+</MyGUI>

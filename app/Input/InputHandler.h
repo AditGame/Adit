@@ -57,6 +57,8 @@ private:
 		A_Right,
 		A_Jump,
 
+		A_Escape = 10, //jump to give room for more movement enums
+
 		A_NumActions
 	};
 };
