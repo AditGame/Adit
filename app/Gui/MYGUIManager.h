@@ -9,6 +9,7 @@
 #include <osg/Drawable>
 #include <osgGA/GUIEventHandler>
 #include <queue>
+#include <mutex>
 
 class MYGUIManager;
 
@@ -48,12 +49,14 @@ public:
     // drawable methods
     virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
     virtual void releaseGLObjects( osg::State* state=0 ) const;
-
-	virtual void updateEvents() const;
     
 protected:
     virtual ~MYGUIManager() {}
+
+	//when drawing, no changes can be made to the GUIs. handle this here.
+	mutable std::recursive_mutex drawMutex;
     
+    virtual void updateEvents() const;
     virtual void setupResources();
     virtual void initializeControls() {}
     

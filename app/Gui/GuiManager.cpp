@@ -113,6 +113,7 @@ GuiMode GuiManager::getTopGui()
 
 void GuiManager::updateVisibility()
 {
+	std::lock_guard<std::recursive_mutex> myMutex(drawMutex);
 
 	// To begin with, hide all GUIs
 	_escMenu->setVisible(false);

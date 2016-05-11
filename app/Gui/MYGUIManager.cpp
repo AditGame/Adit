@@ -138,6 +138,7 @@ void MYGUIManager::drawImplementation( osg::RenderInfo& renderInfo ) const
     }
     else if ( contextID==_activeContextID )
     {
+		std::lock_guard<std::recursive_mutex> myMutex(drawMutex);
         osg::State* state = renderInfo.getState();
         state->disableAllVertexArrays();
         state->disableTexCoordPointer( 0 );
