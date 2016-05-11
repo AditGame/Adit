@@ -114,8 +114,7 @@ void InputHandler::update()
 			{
 				//if no gui is currently open, open the escape menu. Otherwise 
 				GuiManager* gui = GameEngine::inst().getGui();
-				GuiMode currmode = gui->getTopGui();
-				if (currmode != GuiMode::GUI_Escape_Menu)
+				if (!gui->isAnyGuiMode())
 					gui->addGuiMode(GuiMode::GUI_Escape_Menu);
 				else
 					gui->popGuiMode();

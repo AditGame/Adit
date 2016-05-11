@@ -7,6 +7,7 @@
 #include "Input\InputHandler.h"
 
 #include "EscapeMenu.h"
+#include "SettingsMenu.h"
 
 GuiManager::GuiManager(osg::Group * root, osgViewer::Viewer* view) :
 	MYGUIManager(),
@@ -60,6 +61,7 @@ void GuiManager::initializeControls()
 {
 	//init all the guis
 	_escMenu = new EscapeMenu();
+	_settingsMenu = new SettingsMenu();
 
 	updateVisibility();
 }
@@ -114,6 +116,7 @@ void GuiManager::updateVisibility()
 
 	// To begin with, hide all GUIs
 	_escMenu->setVisible(false);
+	_settingsMenu->setVisible(false);
 
 	// update mouse trap/visibility
 	bool gameMode = !isAnyGuiMode();
@@ -126,6 +129,9 @@ void GuiManager::updateVisibility()
 		{
 		case GUI_Escape_Menu:
 			_escMenu->setVisible(true);
+			break;
+		case GUI_Settings_Menu:
+			_settingsMenu->setVisible(true);
 			break;
 		}
 	}

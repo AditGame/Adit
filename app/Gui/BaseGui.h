@@ -1,4 +1,6 @@
-#include <MYGUI\MyGUI_Widget.h>
+#pragma once
+
+#include <MYGUI\MyGUI.h>
 
 class BaseGui
 {

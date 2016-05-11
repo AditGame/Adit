@@ -48,11 +48,12 @@ public:
     // drawable methods
     virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
     virtual void releaseGLObjects( osg::State* state=0 ) const;
+
+	virtual void updateEvents() const;
     
 protected:
     virtual ~MYGUIManager() {}
     
-    virtual void updateEvents() const;
     virtual void setupResources();
     virtual void initializeControls() {}
     

@@ -21,7 +21,7 @@ bool MYGUIHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAda
     // As MyGUI handle all events within the OpenGL context, we have to record the event here
     // and process it later in the draw implementation
     if ( ea.getEventType()!=osgGA::GUIEventAdapter::FRAME )
-        _manager->pushEvent( &ea );
+        _manager->pushEvent( new osgGA::GUIEventAdapter(ea) );
     return false;
 }
 

@@ -18,6 +18,7 @@
 #include "Modes.h"
 
 class EscapeMenu;
+class SettingsMenu;
 
 /// Controls all the gui elements, displaying them as needed
 class GuiManager : public MYGUIManager
@@ -55,6 +56,7 @@ private:
 
 	//the GUIs
 	EscapeMenu* _escMenu;
+	SettingsMenu* _settingsMenu;
 
 	//OSG Render Data
 	osg::Group* _parentNode;

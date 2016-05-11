@@ -74,7 +74,8 @@ osgViewer::Viewer* GameEngine::setUpView()
 	// add the thread model handler
 	//viewer->addEventHandler(new osgViewer::ThreadingHandler);
 
-	viewer->setThreadingModel(osgViewer::ViewerBase::ThreadingModel::CullThreadPerCameraDrawThreadPerContext);
+	//viewer->setThreadingModel(osgViewer::ViewerBase::ThreadingModel::CullThreadPerCameraDrawThreadPerContext);
+	viewer->setThreadingModel(osgViewer::ViewerBase::ThreadingModel::SingleThreaded); //temporarially single threaded due to mygui having issues with not drawing on same thread as the inputmanager
 
 	// add the window size toggle handler
 	osgViewer::WindowSizeHandler* sizeHandler = new osgViewer::WindowSizeHandler();
@@ -135,7 +136,7 @@ void GameEngine::go()
 		viewer->getEventQueue()->windowResize(x, y, w, h);
 	}
 
-
+	_grid->chunkManager->setVisibility(1);
 	_grid->chunkManager->processAllDirty();
 	//_grid->chunkManager->setVisibility(8);
 
