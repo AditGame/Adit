@@ -185,38 +185,41 @@ void MYGUIManager::updateEvents() const
     unsigned int size = _eventsToHandle.size();
     for ( unsigned int i=0; i<size; ++i )
     {
-        const osgGA::GUIEventAdapter& ea = *(_eventsToHandle.front());
-        int x = ea.getX(), y = ea.getY(), key = ea.getKey();
-        if ( ea.getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS )
-            y = ea.getWindowHeight() - y;
-        
-        switch ( ea.getEventType() )
-        {
-        case osgGA::GUIEventAdapter::PUSH:
-            MyGUI::InputManager::getInstance().injectMousePress( x, y, convertMouseButton(ea.getButton()) );
-            break;
-        case osgGA::GUIEventAdapter::RELEASE:
-            MyGUI::InputManager::getInstance().injectMouseRelease( x, y, convertMouseButton(ea.getButton()) );
-            break;
-        case osgGA::GUIEventAdapter::DRAG:
-        case osgGA::GUIEventAdapter::MOVE:
-            MyGUI::InputManager::getInstance().injectMouseMove( x, y, 0 );
-            break;
-        case osgGA::GUIEventAdapter::KEYDOWN:
-            if ( key<127 )
-                MyGUI::InputManager::getInstance().injectKeyPress( convertKeyCode(key), (char)key );
-            else
-                MyGUI::InputManager::getInstance().injectKeyPress( convertKeyCode(key) );
-            break;
-        case osgGA::GUIEventAdapter::KEYUP:
-            MyGUI::InputManager::getInstance().injectKeyRelease( convertKeyCode(key) );
-            break;
-        case osgGA::GUIEventAdapter::RESIZE:
-            _platform->getRenderManagerPtr()->setViewSize( ea.getWindowWidth(), ea.getWindowHeight() );
-            break;
-        default:
-            break;
-        }
+        const osgGA::GUIEventAdapter* ea = _eventsToHandle.front();
+		if (ea != NULL)
+		{
+			int x = ea->getX(), y = ea->getY(), key = ea->getKey();
+			if (ea->getMouseYOrientation() == osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
+				y = ea->getWindowHeight() - y;
+
+			switch (ea->getEventType())
+			{
+			case osgGA::GUIEventAdapter::PUSH:
+				MyGUI::InputManager::getInstance().injectMousePress(x, y, convertMouseButton(ea->getButton()));
+				break;
+			case osgGA::GUIEventAdapter::RELEASE:
+				MyGUI::InputManager::getInstance().injectMouseRelease(x, y, convertMouseButton(ea->getButton()));
+				break;
+			case osgGA::GUIEventAdapter::DRAG:
+			case osgGA::GUIEventAdapter::MOVE:
+				MyGUI::InputManager::getInstance().injectMouseMove(x, y, 0);
+				break;
+			case osgGA::GUIEventAdapter::KEYDOWN:
+				if (key < 127)
+					MyGUI::InputManager::getInstance().injectKeyPress(convertKeyCode(key), (char)key);
+				else
+					MyGUI::InputManager::getInstance().injectKeyPress(convertKeyCode(key));
+				break;
+			case osgGA::GUIEventAdapter::KEYUP:
+				MyGUI::InputManager::getInstance().injectKeyRelease(convertKeyCode(key));
+				break;
+			case osgGA::GUIEventAdapter::RESIZE:
+				_platform->getRenderManagerPtr()->setViewSize(ea->getWindowWidth(), ea->getWindowHeight());
+				break;
+			default:
+				break;
+			}
+		}
         const_cast<MYGUIManager*>(this)->_eventsToHandle.pop();
     }
 }
