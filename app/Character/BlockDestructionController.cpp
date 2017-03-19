@@ -51,14 +51,21 @@ void BlockDestructionController::update(Player * player, double time)
 {
 	highlightBlock(player);
 
-	if (_createCoolDown <= 0.0 && _isCreating)
+	if (_isCreating)
 	{
-		createBlock(player, BlockType::BlockType_Stone);
-		_createCoolDown = player->getStats().getCreateBlockCooldown();
+		if (_createCoolDown <= 0.0)
+		{
+			createBlock(player, BlockType::BlockType_Stone);
+			_createCoolDown = player->getStats().getCreateBlockCooldown();
+		}
+		else
+		{
+			_createCoolDown -= time;
+		}
 	}
 	else
 	{
-		_createCoolDown -= time;
+		_createCoolDown = 0;
 	}
 
 	if (_isDestroying)
