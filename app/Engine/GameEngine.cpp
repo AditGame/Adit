@@ -136,7 +136,7 @@ void GameEngine::go()
 		viewer->getEventQueue()->windowResize(x, y, w, h);
 	}
 
-	_grid->chunkManager->setVisibility(1);
+	_grid->chunkManager->setVisibility(4);
 	_grid->chunkManager->processAllDirty();
 	//_grid->chunkManager->setVisibility(8);
 

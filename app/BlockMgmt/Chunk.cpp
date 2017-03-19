@@ -97,9 +97,9 @@ void Chunk::rebuild(BlockGrid* grid)
 		_chunkLocation.x()*chunkWidth + chunkWidth-1, _chunkLocation.y()*chunkWidth + chunkWidth-1, z);
 
 	using namespace PolyVox;
-	std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
+	//std::cout << "Rendering region: " << reg.getLowerCorner() << " -> " << reg.getUpperCorner() << std::endl;
 
-	PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType>> mesh = extractCubicMesh(grid->getBlockMap(), reg);
+	PolyVox::Mesh<PolyVox::CubicVertex<CompositeBlock::blockDataType>> mesh = extractCubicMesh(grid->getBlockMap(), reg, PolyVox::DefaultIsQuadNeeded<CompositeBlock::blockDataType>(), false);
 
 	// cleanup meshes and whatnot
 
@@ -150,8 +150,6 @@ void Chunk::rebuild(BlockGrid* grid)
 	//set up the rigid body
 	if (_rigidBody == nullptr)
 	{
-		//_motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(_chunkLocation.x()*Chunk::chunkWidth, _chunkLocation.y()*Chunk::chunkWidth, _chunkLocation.z()*Chunk::chunkHeight)));
-		
 		_motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0,0,0)));
 
 		btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, _motionState, _physShape, btVector3(0, 0, 0));

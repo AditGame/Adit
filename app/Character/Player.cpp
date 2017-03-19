@@ -16,7 +16,7 @@
 #include "BlockMgmt/BlockGrid.h"
 #include "Physics/SyncedMotionState.h"
 
-Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(1000 * OSGRenderer::BLOCK_WIDTH,1000 * OSGRenderer::BLOCK_WIDTH,135 * OSGRenderer::BLOCK_WIDTH)), _headNode(new osg::PositionAttitudeTransform), _bodySwitch(new osg::Switch), _firstPerson(true), _controller(this)
+Player::Player(osg::Group* parentNode) : Entity(parentNode, osg::Vec3d(1000 * OSGRenderer::BLOCK_WIDTH,1000 * OSGRenderer::BLOCK_WIDTH,200 * OSGRenderer::BLOCK_WIDTH)), _headNode(new osg::PositionAttitudeTransform), _bodySwitch(new osg::Switch), _firstPerson(true), _controller(this)
 {
 	_baseNode->addChild(_bodySwitch);
 	_bodySwitch->addChild(_headNode);
