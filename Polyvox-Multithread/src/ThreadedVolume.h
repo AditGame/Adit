@@ -38,7 +38,7 @@
 #include <stdexcept> //For invalid_argument
 #include <vector>
 
-#include <mutex>
+#include <shared_mutex>
 
 namespace PolyVox
 {
@@ -109,7 +109,7 @@ namespace PolyVox
 			// Note: Do we really need to store this position here as well as in the block maps?
 			Vector3DInt32 m_v3dChunkSpacePosition;
 
-			std::mutex _mutex;
+			std::shared_mutex _mutex;
 		};
 
 		/**

@@ -42,6 +42,8 @@ namespace PolyVox
 		POLYVOX_ASSERT(m_pPager, "No valid pager supplied to chunk constructor.");
 		POLYVOX_ASSERT(uSideLength <= 256, "Chunk side length cannot be greater than 256.");
 
+		_mutex.lock();
+
 		// Compute the side length               
 		m_uSideLength = uSideLength;
 		m_uSideLengthPower = logBase2(uSideLength);
@@ -65,6 +67,8 @@ namespace PolyVox
 
 		// We'll use this later to decide if data needs to be paged out again.
 		m_bDataModified = false;
+
+		_mutex.unlock();
 	}
 
 	template <typename VoxelType>
@@ -101,7 +105,7 @@ namespace PolyVox
 	template <typename VoxelType>
 	VoxelType ThreadedVolume<VoxelType>::Chunk::getVoxel(uint32_t uXPos, uint32_t uYPos, uint32_t uZPos)
 	{
-		_mutex.lock(); //C++17: turn into shared_mutex
+		_mutex.lock_shared(); //C++17: turn into shared_mutex
 		// This code is not usually expected to be called by the user, with the exception of when implementing paging 
 		// of uncompressed data. It's a performance critical code path so we use asserts rather than exceptions.
 		POLYVOX_ASSERT(uXPos < m_uSideLength, "Supplied position is outside of the chunk");
@@ -112,7 +116,7 @@ namespace PolyVox
 		uint32_t index = morton256_x[uXPos] | morton256_y[uYPos] | morton256_z[uZPos];
 
 		VoxelType vox = m_tData[index];
-		_mutex.unlock(); //C++17: turn into shared_mutex
+		_mutex.unlock_shared(); //C++17: turn into shared_mutex
 		return vox;
 	}
 
