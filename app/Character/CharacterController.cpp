@@ -71,7 +71,7 @@ void CharacterController::setUpState(int newState)
 		break;
 	case In_Air:
 		std::cout << "In Air" << std::endl;
-		_player->getRigidBody()->setDamping(0, 0);
+		_player->getRigidBody()->setDamping(0.1, 0);
 		break;
 	}
 
@@ -98,7 +98,11 @@ void CharacterController::updateState()
 		//on ground
 		if (x != 0.0 || y != 0.0 || z != 0.0)
 		{
-			float mag = _player->getStats().getRunningSpeed();
+			float mag = 0;
+			if (x != 0.0 || y != 0.0)
+			{
+				mag = _player->getStats().getRunningSpeed();
+			}
 
 			btScalar initZ = _player->getRigidBody()->getLinearVelocity().z();
 			if (z == 0.0)
@@ -117,7 +121,7 @@ void CharacterController::updateState()
 	case In_Air:
 	{
 		//in air
-		if (x != 0.0 || y != 0.0 || z != 0.0)
+		if (x != 0.0 || y != 0.0)
 		{
 			float mag = _player->getStats().getRunningSpeed();
 
