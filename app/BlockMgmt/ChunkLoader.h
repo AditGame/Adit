@@ -14,12 +14,18 @@ public:
 	ChunkLoader();
 	~ChunkLoader();
 
+	void start();
+
+	void stop();
+
 	void requestLoadChunk(Coords location, bool front=false);
 	Chunk* getLoadedChunk();
 
 	void removeChunk(Coords location);
 
 	void stopThread() { stopFlag = true; }
+
+	bool isRunning() { return stopFlag; }
 
 	void waitUntilEmpty();
 
@@ -31,10 +37,8 @@ public:
 	void priorityLoop();
 private:
 	std::list<Coords> toLoad;
-	std::list<Coords> priorityToLoad;
 	std::list<Chunk*> loaded;
 	std::mutex toLoadMutex;
-	std::mutex priorityToLoadMutex;
 	std::mutex loadedMutex;
 	bool stopFlag;
 

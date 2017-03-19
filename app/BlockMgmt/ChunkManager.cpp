@@ -13,7 +13,7 @@
 
 ChunkManager::ChunkManager(BlockGrid* container):_gridContainer(container), _center(-100,-100,-100)
 {
-	_visibility = 4;
+	_visibility = 1;
 }
 
 
@@ -134,6 +134,7 @@ void ChunkManager::moveCenterChunk(Coords movement)
 
 void ChunkManager::processAllDirty()
 {
+	chunkLoader.start();
 	chunkLoader.waitUntilEmpty();
 	
 	Chunk* chunk = chunkLoader.getLoadedChunk();

@@ -17,22 +17,31 @@ void ChunkLoader::operator()()
 
 ChunkLoader::ChunkLoader()
 {
-	stopFlag = false;
-	for (int i = 0; i < 1; i++)
-	{
-		loadThreads.push_back(new std::thread([=] { loop(); }));
-	}
-	for (int i = 0; i < 1; i++)
-	{
-		loadThreads.push_back(new std::thread([=] { priorityLoop(); }));
-	}
+	stopFlag = true;
 }
 
 
 ChunkLoader::~ChunkLoader()
 {
+	stop();
+}
+
+void ChunkLoader::start()
+{
+	if (isRunning())
+	{
+		stopFlag = false;
+		for (int i = 0; i < 3; i++)
+		{
+			loadThreads.push_back(new std::thread([=] { loop(); }));
+		}
+	}
+}
+
+void ChunkLoader::stop()
+{
 	stopFlag = true;
-	while(!loadThreads.empty())
+	while (!loadThreads.empty())
 	{
 		loadThreads.front()->join();
 		loadThreads.pop_front();
@@ -42,18 +51,19 @@ ChunkLoader::~ChunkLoader()
 
 void ChunkLoader::requestLoadChunk(Coords location, bool front)
 {
-	if (front)
+	toLoadMutex.lock();
+	if (std::find(toLoad.begin(), toLoad.end(), location) == toLoad.end())
 	{
-		priorityToLoadMutex.lock();
-		priorityToLoad.push_back(location);
-		priorityToLoadMutex.unlock();
+		if (front)
+		{
+			toLoad.push_front(location);
+		}
+		else
+		{
+			toLoad.push_back(location);
+		}
 	}
-	else
-	{
-		toLoadMutex.lock();
-		toLoad.push_back(location);
-		toLoadMutex.unlock();
-	}
+	toLoadMutex.unlock();
 }
 
 void ChunkLoader::waitUntilEmpty()
@@ -112,35 +122,6 @@ void ChunkLoader::loop()
 
 			loadedMutex.lock();
 			loaded.push_back(chunk);
-			loadedMutex.unlock();
-		}
-	}
-}
-
-void ChunkLoader::priorityLoop()
-{
-	stopFlag = false;
-	Sleep(10); //give the rest of the program a wee bit to set up
-	while (!stopFlag)
-	{
-		priorityToLoadMutex.lock();
-		if (priorityToLoad.size() == 0)
-		{
-			priorityToLoadMutex.unlock();
-			std::this_thread::yield(); //yield to prevent spinlocking
-		}
-		else
-		{
-			//Retrieve oldest load request
-			Coords coords = priorityToLoad.front();
-			priorityToLoad.pop_front();
-			priorityToLoadMutex.unlock();
-
-			Chunk* chunk = new Chunk(coords);
-			chunk->rebuild(GameEngine::inst().getGrid());
-
-			loadedMutex.lock();
-			loaded.push_front(chunk);
 			loadedMutex.unlock();
 		}
 	}
